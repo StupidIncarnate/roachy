@@ -1,17 +1,15 @@
-import {REF} from "../config";
-
-import fs from "fs";
-import path from "path";
 import chalk from "chalk";
+import {REF} from "../config";
+import {FsHelper} from "../helpers/fs-helper";
 
 export default () => {
-	const initDir = __dirname;
 
-	if(fs.existsSync(path.join(__dirname, initDir))) {
+	const initPath = FsHelper.getPath([FsHelper.cwd(), REF.configName]);
+	if(FsHelper.exists(initPath)) {
 		throw new Error("Roachy already initialized. Too many cockroaches are a bad thing, ya know?");
 	}
 
-	fs.writeFileSync(path.join(initDir, REF.configName), {
+	FsHelper.writeJson(initPath, {
 		version: 0.1,
 		projects: [],
 		projectDependencies: {},
@@ -19,4 +17,5 @@ export default () => {
 	});
 
 	console.log(chalk.blue(`Roachy Init'd. Let roachy know what projects to keep track of via`), chalk.green("roachy add <projectName> <projectLocation>"));
+
 }
