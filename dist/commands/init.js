@@ -5,12 +5,10 @@
  */
 "use strict";
 
-var _init = _interopRequireDefault(require("../exec/init"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _initExec = require("../exec/init-exec");
 
 try {
-  (0, _init.default)();
+  (0, _initExec.InitExec)();
 } catch (e) {
   throw e;
 }

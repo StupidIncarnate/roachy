@@ -5,6 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.REF = void 0;
 var REF = {
-  configName: "roachy.config.json"
+  configName: "roachy.config.json",
+  childConfigName: "roachy-soldier.config.json"
 };
 exports.REF = REF;

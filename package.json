@@ -1,6 +1,6 @@
 {
   "name": "roachy",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "StupidIncarnate",
   "dependencies": {
     "chalk": "^2.4.1",
@@ -21,14 +21,15 @@
   "description": "Handles convoluted monolith package.json locations for optimized docker deploys",
   "main": "lib/index.js",
   "bin": {
-    "init": "./dist/commands/init"
+    "init": "./dist/commands/init",
+    "add": "./dist/commands/add"
   },
   "scripts": {
     "test": "mocha test/unit/*.test.js --compilers js:@babel/register --reporter mocha-junit-reporter",
     "prebuild": "npm run test",
     "build": "babel src --out-dir dist",
     "prepare": "npm run build",
-    "version": "npm run format && git add -A src",
+    "version": "git add -A src",
     "postversion": "git push && git push --tags"
   },
   "repository": {
