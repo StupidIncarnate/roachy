@@ -2,14 +2,21 @@
   "name": "roachy",
   "version": "0.0.1",
   "author": "StupidIncarnate",
-  "dependencies": {},
+  "dependencies": {
+    "chalk": "^2.4.1"
+  },
   "engine": {
     "node": "10.8.0"
   },
   "description": "Handles convoluted monolith package.json locations for optimized docker deploys",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "bin": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "babel src --out-dir dist",
+    "prepublishOnly": "npm run build",
+    "prepare": "npm run build",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
@@ -24,5 +31,14 @@
   "bugs": {
     "url": "https://github.com/StupidIncarnate/roachy/issues"
   },
-  "homepage": "https://github.com/StupidIncarnate/roachy#readme"
+  "homepage": "https://github.com/StupidIncarnate/roachy#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.2.0",
+    "@babel/core": "^7.2.0",
+    "@babel/node": "^7.2.0",
+    "@babel/preset-env": "^7.2.0",
+    "chai": "^4.2.0",
+    "fs-extra": "^7.0.1",
+    "mocha": "^5.2.0"
+  }
 }
