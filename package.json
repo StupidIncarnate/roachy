@@ -1,0 +1,28 @@
+{
+  "name": "roachy",
+  "version": "0.0.1",
+  "author": "StupidIncarnate",
+  "dependencies": {},
+  "engine": {
+    "node": "10.8.0"
+  },
+  "description": "Handles convoluted monolith package.json locations for optimized docker deploys",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StupidIncarnate/roachy.git"
+  },
+  "keywords": [
+    "monorepo",
+    "clutter",
+    "infinite-package.json"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/StupidIncarnate/roachy/issues"
+  },
+  "homepage": "https://github.com/StupidIncarnate/roachy#readme"
+}
