@@ -3,10 +3,11 @@
  * Scaffold a project
  */
 
-import init from '../exec/init';
+
+import {InitExec} from "../exec/init-exec";
 
 try {
-	init();
+	InitExec();
 } catch(e) {
 	throw e;
 }

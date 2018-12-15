@@ -12,7 +12,8 @@
     "@babel/node": "^7.2.0",
     "@babel/preset-env": "^7.2.0",
     "chai": "^4.2.0",
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "mocha-junit-reporter": "^1.18.0"
   },
   "engine": {
     "node": "10.8.0"
@@ -23,7 +24,7 @@
     "init": "./dist/commands/init"
   },
   "scripts": {
-    "test": "mocha test/unit/*.test.js --compilers js:@babel/register",
+    "test": "mocha test/unit/*.test.js --compilers js:@babel/register --reporter mocha-junit-reporter",
     "prebuild": "npm run test",
     "build": "babel src --out-dir dist",
     "prepare": "npm run build",
