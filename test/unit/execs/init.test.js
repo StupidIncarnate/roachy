@@ -1,7 +1,7 @@
-import {TestHelper} from "../helpers/test-helper";
+import {TestHelper} from "../../helpers/test-helper";
 const expect = require('chai').expect;
 
-import {InitExec} from "../../src/exec/init-exec";
+import {InitExec} from "../../../src/exec/init-exec";
 
 describe("cmd: init", ()=>{
 	beforeEach(()=> {
@@ -13,7 +13,6 @@ describe("cmd: init", ()=>{
 		const configJson = TestHelper.getJsonContents("roachy.config.json");
 		expect(configJson).to.have.property("version", 0.1);
 		expect(configJson).to.have.property("apps").and.to.be.an("object");
-		expect(configJson).to.have.property("appDependencies").and.to.be.an("object");
 		expect(configJson).to.have.property("packages").and.to.be.an("object");
 		expect(configJson).to.have.property("devPackages").and.to.be.an("object");
 

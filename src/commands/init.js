@@ -1,6 +1,7 @@
 #! /usr/bin/env node
 /**
  * Scaffold a project
+ * roachy init
  */
 
 

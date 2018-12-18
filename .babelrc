@@ -1,4 +1,9 @@
 {
   "presets": ["@babel/preset-env"],
-  "plugins": []
+  "plugins": [
+    ["@babel/plugin-transform-async-to-generator",  {
+      "module": "bluebird",
+      "method": "coroutine"
+    }]
+  ]
 }

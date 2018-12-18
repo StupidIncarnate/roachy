@@ -40,8 +40,14 @@ export const FsHelper = {
 
 		throw new Error(ErrorMessages.ROOT_NOT_FOUND);
 	},
+	ensureRootPath() {
+		process.chdir(this.getRootPath(this.cwd()));
+	},
 	exists(pathArr) {
 		return fs.existsSync(this.getPath(pathArr));
+	},
+	openJson(folderPath) {
+		return fsExtra.readJsonSync(path.join(folderPath, "package.json"));
 	},
 	writeJson(path, contents) {
 		fsExtra.writeJsonSync(path, contents, {spaces: '\t'});

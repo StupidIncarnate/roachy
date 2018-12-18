@@ -3,6 +3,7 @@ import fs from 'fs';
 import fsExtra from "fs-extra";
 import {InitExec} from "../../src/exec/init-exec";
 import {REF} from "../../src/config";
+import {AddExec} from "../../src/exec/add-exec";
 const currentDir = __dirname;
 
 export const TestHelper = {
@@ -30,5 +31,8 @@ export const TestHelper = {
 	},
 	initEnvironment() {
 		InitExec();
+	},
+	initLibUiApp() {
+		AddExec("lib-ui", "src/lib/lib-ui");
 	}
 };

@@ -1,11 +1,11 @@
-import {TestHelper} from "../helpers/test-helper";
+import {TestHelper} from "../../helpers/test-helper";
 import {expect} from 'chai';
 
-import {ErrorMessages} from "../../src/error-messages";
-import {AddExec} from "../../src/exec/add-exec";
-import {REF} from "../../src/config";
+import {ErrorMessages} from "../../../src/error-messages";
+import {AddExec} from "../../../src/exec/add-exec";
+import {REF} from "../../../src/config";
 
-describe("cmd: add", () => {
+describe.only("cmd: add", () => {
 	describe("Bad State", () => {
 		describe("Not Init Yet", ()=> {
 			beforeEach(()=> {
@@ -41,10 +41,15 @@ describe("cmd: add", () => {
 		it("adds an app to config", ()=>{
 			const appName = "lib-ui";
 			const appLoc = "src/lib/lib-ui";
-			const childConfigPath = "src/lib/lib-ui/" + REF.childConfigName;
 			AddExec(appName, appLoc);
-			expect(TestHelper.getRootConfig()).to.have.property("apps").and.to.eql( {[appName]: appLoc});
-			//expect(TestHelper.ensureFileExists(childConfigPath), `${"src/lib/lib-ui/" + REF.childConfigName} exists`).to.be.true;
+			expect(TestHelper.getRootConfig()).to.have.property("apps").and.to.eql({
+				[appName]: {
+					path: appLoc,
+					attachedApps: [],
+					packages: [],
+					devPackages: []
+				}
+			});
 		});
 
 	});

@@ -4,15 +4,27 @@ export const RootConfigHelper = {
 		return {
 			version: 0.1,
 			apps: {},
-			appDependencies: {},
 			packages: {},
 			devPackages: {}
 		};
 	},
 	hasApp(config, appName) {
-		return config.apps.indexOf(appName) !== -1;
+		return Object.keys(config.apps).indexOf(appName) !== -1;
 	},
 	addApp(config, appName, appLocation) {
-		config.apps[appName] = appLocation;
+		config.apps[appName] = {
+			path: appLocation,
+			attachedApps: [],
+			packages: [],
+			devPackages: []
+		};
+	},
+	getAppNames(config) {
+		try {
+			return Object.keys(config.apps);
+		} catch(e) {
+		}
+
+		return [];
 	}
 };

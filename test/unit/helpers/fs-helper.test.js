@@ -1,8 +1,8 @@
 import path from 'path';
 const expect = require('chai').expect;
-import {TestHelper} from "../helpers/test-helper";
-import {FsHelper} from "../../src/helpers/fs-helper";
-import {ErrorMessages} from "../../src/error-messages";
+import {TestHelper} from "../../helpers/test-helper";
+import {FsHelper} from "../../../src/helpers/fs-helper";
+import {ErrorMessages} from "../../../src/error-messages";
 
 describe("helper/fs-helper", ()=>{
 	beforeEach(()=>{
