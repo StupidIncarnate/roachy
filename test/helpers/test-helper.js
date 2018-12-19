@@ -4,7 +4,11 @@ import fsExtra from "fs-extra";
 import {InitExec} from "../../src/exec/init-exec";
 import {REF} from "../../src/config";
 import {AddExec} from "../../src/exec/add-exec";
+import {InstallExec} from "../../src/exec/install-exec";
+import chai, {expect} from "chai";
 const currentDir = __dirname;
+
+chai.use(require("chai-match"));
 
 export const TestHelper = {
 	getTestArea: ()=> path.join(currentDir, "..", "stg"),
@@ -40,5 +44,12 @@ export const TestHelper = {
 	},
 	initLibUiApp() {
 		AddExec("lib-ui", this.getLibUiPath());
+	},
+	installPackage(pkg) {
+		return InstallExec([pkg]);
+	},
+
+	expectStaticVersion(value) {
+		expect(value).to.match(/^\d+\.\d+\.\d+$/);
 	}
 };

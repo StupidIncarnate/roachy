@@ -2,7 +2,6 @@ import {TestHelper} from "../../helpers/test-helper";
 import {expect} from 'chai';
 import chai from 'chai';
 chai.use(require("chai-as-promised"));
-chai.use(require("chai-match"));
 
 import {ErrorMessages} from "../../../src/error-messages";
 import {REF} from "../../../src/config";
@@ -10,7 +9,7 @@ import {RootConfigHelper} from "../../../src/helpers/root-config-helper";
 import {InstallExec} from "../../../src/exec/install-exec";
 import {PackageHelper} from "../../../src/helpers/package-helper";
 
-describe.only("cmd: install", () => {
+describe("cmd: install", () => {
 	describe("Bad State", () => {
 		describe("Not Init Yet", ()=> {
 			beforeEach(()=> {
@@ -60,7 +59,7 @@ describe.only("cmd: install", () => {
 						const rootConfigPkgs =  RootConfigHelper.getPackages(rootConfig);
 						expect(Object.keys(rootConfigPkgs)).to.eql(["npm-package-arg", "request"]);
 						for(const pkg in rootConfigPkgs){
-							expect(rootConfigPkgs[pkg]).to.match(/^\d+\.\d+\.\d+$/);
+							TestHelper.expectStaticVersion(rootConfigPkgs[pkg]);
 						}
 						const rootPackage = TestHelper.getRootPackage();
 						expect(Object.keys(PackageHelper.getDevInstalled(rootPackage))).to.eql(["moment", "npm-package-arg", "request"]);

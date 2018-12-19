@@ -1,9 +1,6 @@
 import {FsHelper} from "../../helpers/fs-helper";
 import {ErrorMessages} from "../../error-messages";
 import {RootConfigHelper} from "../../helpers/root-config-helper";
-import {NpmExecHelper} from "../../helpers/npm-exec-helper";
-
-import AppsUpgrader from "../../classes/apps-upgrader";
 
 export const AddCmd = (appName, packages) => {
 	/**
@@ -26,14 +23,12 @@ export const AddCmd = (appName, packages) => {
 		throw new Error(ErrorMessages.NOT_INSTALLED + " " + unknownPackages.join(","))
 	}
 
+	const appConfig = RootConfigHelper.getAppConfig(rootConfig, appName);
+	RootConfigHelper.setAppPackages(appConfig, RootConfigHelper.getAppPackages(appConfig).concat(packages));
 
-	/**
-	 * Check packages getting installed
-	 * - if it doesnt exist in rootApp, install
-	 * - if it does exist in root app, make sure to strip version so we dont install a bad version
-	 *
-	 * Add to app deps and rebuild dep trees
-	 */
+	FsHelper.saveRootConfig(rootConfig);
+
+	// Build out package.json deps for all apps
 
 	// appsUpgrader.snapshotRoot();
 	//
