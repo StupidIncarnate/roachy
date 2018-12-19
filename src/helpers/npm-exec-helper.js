@@ -14,8 +14,10 @@ export const NpmExecHelper = {
 			}
 		});
 	},
-	install(packages) {
-		return NpmExecHelper.exec(`npm install ${packages.join(" ")}`).then(msg => {
+	install(packages, asDev) {
+
+		const cmd = `npm install ${asDev && '--save-dev'} ${packages.join(" ")}`
+		return NpmExecHelper.exec(cmd).then(msg => {
 			return true;
 		}).catch(e =>{
 
@@ -27,5 +29,6 @@ export const NpmExecHelper = {
 					throw new Error(ErrorMessages.UNKNOWN_NPM_ERROR);
 			}
 		});
-	}
+	},
+
 };

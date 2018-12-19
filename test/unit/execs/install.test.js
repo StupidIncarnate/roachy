@@ -6,9 +6,11 @@ chai.use(chaiAsPromised);
 
 import {ErrorMessages} from "../../../src/error-messages";
 import {REF} from "../../../src/config";
-import {InstallExec} from "../../../src/exec/app/install-cmd";
+import {RootConfigHelper} from "../../../src/helpers/root-config-helper";
+import {InstallExec} from "../../../src/exec/install-exec";
+import {PackageHelper} from "../../../src/helpers/package-helper";
 
-describe("cmd: install", () => {
+describe.only("cmd: install", () => {
 	describe("Bad State", () => {
 		describe("Not Init Yet", ()=> {
 			beforeEach(()=> {
@@ -25,16 +27,20 @@ describe("cmd: install", () => {
 				TestHelper.initLibUiApp();
 			});
 			it("errors if nothing passed", () => {
-				expect(() => InstallExec()).to.throw(ErrorMessages.APPS_REQUIRED);
-			});
-			it("errors if no apps were passed", ()=>{
-				expect(() => InstallExec(["moment"])).to.throw(ErrorMessages.APPS_REQUIRED);
-			});
-			it("errors if no packages were passed", ()=>{
-				expect(() => InstallExec(["lib-ui"])).to.throw(ErrorMessages.PACKAGES_REQUIRED);
+				expect(() => InstallExec([])).to.throw(ErrorMessages.PACKAGES_REQUIRED);
 			});
 			it("errors if package one package is not recognized", ()=>{
-				return expect(InstallExec(["lib-ui", "jksdhkds"])).to.be.rejectedWith(Error, ErrorMessages.UNKNOWN_PACKAGE);
+				return expect(InstallExec(["jksdhkds"])).to.be.rejectedWith(Error, ErrorMessages.UNKNOWN_PACKAGE);
+			});
+			it("errors when one package is not valid",()=>{
+				const rootConfig = TestHelper.getRootConfig();
+				expect(RootConfigHelper.getPackages(rootConfig)).to.eql({});
+				return expect(InstallExec(["request","jksdhkds"])).to.be.rejected
+					.then(err =>{
+						expect(err).to.be.an.instanceOf(Error, ErrorMessages.UNKNOWN_PACKAGE);
+						const rootConfig = TestHelper.getRootConfig();
+						expect(Object.keys(RootConfigHelper.getPackages(rootConfig))).to.eql([]);
+					});
 			});
 		});
 
@@ -45,35 +51,19 @@ describe("cmd: install", () => {
 				TestHelper.prepEnvironment();
 				TestHelper.initEnvironment();
 			});
-			it("adds an already installed package to another app", ()=>{
+			it("installs multiple packages", ()=>{
+				const rootConfig = TestHelper.getRootConfig();
+				expect(RootConfigHelper.getPackages(rootConfig)).to.eql({});
+				return InstallExec(["request","npm-package-arg"])
+					.then(data =>{
+						const rootConfig = TestHelper.getRootConfig();
+						expect(Object.keys(RootConfigHelper.getPackages(rootConfig))).to.eql(["npm-package-arg", "request"]);
+						const rootPackage = TestHelper.getRootPackage();
+						expect(Object.keys(PackageHelper.getDevInstalled(rootPackage))).to.eql(["moment", "npm-package-arg", "request"]);
 
+					});
 			});
-		});
-		describe("Single App Ref", () =>{
-			beforeEach(()=>{
-				TestHelper.prepEnvironment();
-				TestHelper.initEnvironment();
-			});
-			it("adds a package to an app", ()=>{
-				 return InstallExec(["lib-ui", "request"]).then(()=>{
-				 	expect(1).to.equal(1);
-				 });
-			});
-			it("adds multi packages to an app", ()=>{
 
-			});
-		});
-		describe("Multi App Ref", () =>{
-			beforeEach(()=>{
-				TestHelper.prepEnvironment();
-				TestHelper.initEnvironment();
-			});
-			it("adds a package to multiple apps", ()=>{
-
-			});
-			it("adds multi packages to multiple app", ()=>{
-
-			});
 		});
 	});
 });

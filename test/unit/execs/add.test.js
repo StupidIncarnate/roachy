@@ -5,7 +5,7 @@ import {ErrorMessages} from "../../../src/error-messages";
 import {AddExec} from "../../../src/exec/add-exec";
 import {REF} from "../../../src/config";
 
-describe.only("cmd: add", () => {
+describe("cmd: add", () => {
 	describe("Bad State", () => {
 		describe("Not Init Yet", ()=> {
 			beforeEach(()=> {
@@ -51,6 +51,18 @@ describe.only("cmd: add", () => {
 				}
 			});
 		});
+		describe("Without package.json", ()=>{
+			it("adds app and adds package.json", ()=>{
 
+			})
+		});
+		describe("With package.json", ()=>{
+			it("adds app, adds packages to root, deletes node_moudles", ()=>{
+
+			});
+			it("Fails: if package version collides with something already installed", ()=>{
+
+			});
+		});
 	});
 });

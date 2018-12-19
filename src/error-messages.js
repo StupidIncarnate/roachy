@@ -9,8 +9,10 @@ export const ErrorMessages = {
 	APPS_REQUIRED: "One or more appNames are required as an argument",
 	PACKAGES_REQUIRED: "One or more npm packages are required as an argument",
 	UNKNOWN_PACKAGE: "Unknown npm package",
+	NOT_INSTALLED: "Following packages not installed; Make sure you've installed via 'roachy install pkg[...]' like you would npm install:",
 	UNKNOWN_APP: "Provided app is unknown",
 	UNKNOWN_NPM_ERROR: "An unexpected npm error happened. Look above to diagnose.",
-	UNKNOWN_APP_COMMAND: "Unknown app command:"
+	UNKNOWN_APP_COMMAND: "Unknown app command:",
+	APP_UPGRADER_NO_SNAPSHOT: "App upgrader never made a snapshot"
 
 };

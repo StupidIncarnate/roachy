@@ -64,6 +64,20 @@ export const FsHelper = {
 			throw new Error(ErrorMessages.ROOT_NOT_INIT);
 		}
 	},
+	getRootPackageJson(){
+		try{
+			const initPath = FsHelper.getPath("package.json");
+			if(!FsHelper.exists(initPath)) {
+				throw new Error(ErrorMessages.ROOT_NOT_INIT);
+			}
+			return fsExtra.readJsonSync(initPath);
+
+		} catch(e) {
+			console.log(e);
+			throw new Error(ErrorMessages.ROOT_NOT_INIT);
+		}
+
+	},
 	saveRootConfig(config) {
 		this.writeJson(FsHelper.getPath(REF.configName), config);
 	}

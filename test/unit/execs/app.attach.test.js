@@ -3,7 +3,7 @@ import {expect} from "chai";
 import {AppExec} from "../../../src/exec/app-exec";
 import {ErrorMessages} from "../../../src/error-messages";
 
-describe.only("cmd: app.attach", () => {
+describe("cmd: app.attach", () => {
 	describe("Bad State", () => {
 		describe("Bad Calls", ()=>{
 			beforeEach(()=>{

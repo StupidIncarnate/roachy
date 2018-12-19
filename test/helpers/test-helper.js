@@ -18,6 +18,9 @@ export const TestHelper = {
 	getRootConfig(){
 		return this.getJsonContents(REF.configName);
 	},
+	getRootPackage(){
+		return this.getJsonContents("package.json");
+	},
 	getJsonContents(pathArr) {
 		return fsExtra.readJsonSync(this.formatPath(pathArr))
 	},
@@ -29,10 +32,13 @@ export const TestHelper = {
 		fsExtra.copySync(path.join(__dirname, "..", "bootstrap-structure"), this.getTestArea());
 		process.chdir(this.getTestArea());
 	},
+	getLibUiPath(){
+		return "src/lib/lib-ui";
+	},
 	initEnvironment() {
 		InitExec();
 	},
 	initLibUiApp() {
-		AddExec("lib-ui", "src/lib/lib-ui");
+		AddExec("lib-ui", this.getLibUiPath());
 	}
 };

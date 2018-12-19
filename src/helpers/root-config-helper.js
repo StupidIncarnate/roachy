@@ -1,11 +1,11 @@
+import {FsHelper} from "./fs-helper";
 
 export const RootConfigHelper = {
 	getDefaultStructure() {
 		return {
 			version: 0.1,
 			apps: {},
-			packages: {},
-			devPackages: {}
+			packages: {}
 		};
 	},
 	hasApp(config, appName) {
@@ -26,5 +26,8 @@ export const RootConfigHelper = {
 		}
 
 		return [];
-	}
+	},
+	getPackages(config) {
+		return config.packages;
+	},
 };

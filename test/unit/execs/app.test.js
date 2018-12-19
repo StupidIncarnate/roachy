@@ -5,7 +5,7 @@ import {ErrorMessages} from "../../../src/error-messages";
 import {REF} from "../../../src/config";
 import {AppExec} from "../../../src/exec/app-exec";
 
-describe.only("cmd: app", () => {
+describe("cmd: app", () => {
     describe("Bad State", () => {
         describe("Not Init Yet", ()=> {
             beforeEach(()=> {
