@@ -1,8 +1,8 @@
 import {TestHelper} from "../../helpers/test-helper";
 import {expect} from 'chai';
 import chai from 'chai';
-const chaiAsPromised = require("chai-as-promised");
-chai.use(chaiAsPromised);
+chai.use(require("chai-as-promised"));
+chai.use(require("chai-match"));
 
 import {ErrorMessages} from "../../../src/error-messages";
 import {REF} from "../../../src/config";
@@ -57,7 +57,11 @@ describe.only("cmd: install", () => {
 				return InstallExec(["request","npm-package-arg"])
 					.then(data =>{
 						const rootConfig = TestHelper.getRootConfig();
-						expect(Object.keys(RootConfigHelper.getPackages(rootConfig))).to.eql(["npm-package-arg", "request"]);
+						const rootConfigPkgs =  RootConfigHelper.getPackages(rootConfig);
+						expect(Object.keys(rootConfigPkgs)).to.eql(["npm-package-arg", "request"]);
+						for(const pkg in rootConfigPkgs){
+							expect(rootConfigPkgs[pkg]).to.match(/^\d+\.\d+\.\d+$/);
+						}
 						const rootPackage = TestHelper.getRootPackage();
 						expect(Object.keys(PackageHelper.getDevInstalled(rootPackage))).to.eql(["moment", "npm-package-arg", "request"]);
 
