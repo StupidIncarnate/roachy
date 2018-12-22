@@ -42,7 +42,7 @@ describe("cmd: add", () => {
 			const appName = "lib-ui";
 			const appLoc = "src/lib/lib-ui";
 			AddExec(appName, appLoc);
-			expect(TestHelper.getRootConfig()).to.have.property("apps").and.to.eql({
+			expect(TestHelper.getRootConfigObject()).to.have.property("apps").and.to.eql({
 				[appName]: {
 					path: appLoc,
 					attachedApps: [],

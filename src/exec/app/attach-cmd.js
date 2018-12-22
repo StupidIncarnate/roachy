@@ -2,21 +2,22 @@
  * Attaches a child app to a parent app for dependency referencing
  */
 import {FsHelper} from "../../helpers/fs-helper";
-import {ErrorMessages} from "../../error-messages";
-import {RootConfigHelper} from "../../helpers/root-config-helper";
-import {NpmExecHelper} from "../../helpers/npm-exec-helper";
+import {PACKAGE_TYPES} from "../../models/root-app-config.model";
 
 export const AttachCmd = (parentAppName, childAppName) => {
-	const rootConfig = FsHelper.getRootConfig();
+	let rootConfig = FsHelper.getRootConfig();
 
-	if(!RootConfigHelper.hasApp(rootConfig, childAppName)) {
-		throw new Error(`${ErrorMessages.UNKNOWN_APP}: ${childAppName}`);
-	}
+	rootConfig.attachApp(parentAppName, childAppName);
+	const consolidatedPackageApps = rootConfig.buildAppPackageList(parentAppName, PACKAGE_TYPES.PACKAGES);
+	console.log(consolidatedPackageApps);
 
 	/**
 	 *  Add child to parent attached apps
 	 *  Regen package.json for parent
 	 */
 
+	FsHelper.saveRootConfig(rootConfig);
 
+
+	return Promise.resolve();
 };

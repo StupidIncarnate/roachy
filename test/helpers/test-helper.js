@@ -6,6 +6,8 @@ import {REF} from "../../src/config";
 import {AddExec} from "../../src/exec/add-exec";
 import {InstallExec} from "../../src/exec/install-exec";
 import chai, {expect} from "chai";
+import {AppExec} from "../../src/exec/app-exec";
+import RootConfigModel from "../../src/models/root-config.model";
 const currentDir = __dirname;
 
 chai.use(require("chai-match"));
@@ -20,7 +22,10 @@ export const TestHelper = {
 		return path.join.apply(null, pathArr)
 	},
 	getRootConfig(){
-		return this.getJsonContents(REF.configName);
+		return new RootConfigModel(this.getJsonContents(REF.configName));
+	},
+	getRootConfigObject() {
+		return this.getRootConfig().config;
 	},
 	getRootPackage(){
 		return this.getJsonContents("package.json");
@@ -39,17 +44,28 @@ export const TestHelper = {
 	getLibUiPath(){
 		return "src/lib/lib-ui";
 	},
+	getTimewatchUiPath(){
+		return "src/apps/timewatch-app/ui";
+	},
 	initEnvironment() {
 		InitExec();
 	},
 	initLibUiApp() {
 		AddExec("lib-ui", this.getLibUiPath());
 	},
+	initTimewatcherUiLibUiApp() {
+		AddExec("timewatch-ui", this.getTimewatchUiPath());
+	},
 	installPackage(pkg) {
 		return InstallExec([pkg]);
 	},
+	addPackageToApp(appName, pkgs) {
+		return AppExec(appName, "add", pkgs);
+	},
 
-	expectStaticVersion(value) {
-		expect(value).to.match(/^\d+\.\d+\.\d+$/);
+	expectStaticVersions(pkgObj) {
+		for(const pkg in pkgObj) {
+			expect(pkgObj[pkg]).to.match(/^\d+\.\d+\.\d+$/);
+		}
 	}
 };

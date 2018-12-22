@@ -1,7 +1,6 @@
 import chalk from 'chalk';
 import {FsHelper} from "../helpers/fs-helper";
 import {ErrorMessages} from "../error-messages";
-import {RootConfigHelper} from "../helpers/root-config-helper";
 import {NpmExecHelper} from "../helpers/npm-exec-helper";
 import {PackageHelper} from "../helpers/package-helper";
 
@@ -28,10 +27,9 @@ const outputChangedPackages = (oldPackages) => {
 
 	if(hasChanges) {
 		const rootConfig = FsHelper.getRootConfig();
-		for(const pkg in changeObj) {
-			RootConfigHelper.getPackages(rootConfig)[pkg] = changeObj[pkg];
-		}
+		rootConfig.addPackages(changeObj);
 		FsHelper.saveRootConfig(rootConfig);
+
 		console.log(chalk.blue(`Saved the following packages to roachy: ${Object.keys(changeObj).join(", ")}`));
 	}
 	/**

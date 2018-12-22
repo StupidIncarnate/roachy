@@ -3,6 +3,7 @@ import path from "path";
 import fsExtra from 'fs-extra';
 import {REF} from "../config";
 import {ErrorMessages} from "../error-messages";
+import RootConfigModel from "../models/root-config.model";
 
 export const FsHelper = {
 	cwd() {
@@ -58,7 +59,7 @@ export const FsHelper = {
 			if(!FsHelper.exists(initPath)) {
 				throw new Error(ErrorMessages.ROOT_NOT_INIT);
 			}
-			return fsExtra.readJsonSync(initPath);
+			return new RootConfigModel(fsExtra.readJsonSync(initPath));
 
 		} catch(e) {
 			throw new Error(ErrorMessages.ROOT_NOT_INIT);
@@ -79,6 +80,6 @@ export const FsHelper = {
 
 	},
 	saveRootConfig(config) {
-		this.writeJson(FsHelper.getPath(REF.configName), config);
+		this.writeJson(FsHelper.getPath(REF.configName), config.toJSON());
 	}
 };

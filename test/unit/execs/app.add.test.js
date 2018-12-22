@@ -2,8 +2,6 @@ import {TestHelper} from "../../helpers/test-helper";
 import {expect} from "chai";
 import {AppExec} from "../../../src/exec/app-exec";
 import {ErrorMessages} from "../../../src/error-messages";
-import {RootConfigHelper} from "../../../src/helpers/root-config-helper";
-import {PackageHelper} from "../../../src/helpers/package-helper";
 
 describe("cmd: app.add", () => {
 	describe("Bad State", () => {
@@ -21,32 +19,33 @@ describe("cmd: app.add", () => {
 			});
 		});
 		describe("Good State", ()=>{
-			describe("Adds package to app", ()=>{
+			describe("Adds package to roachy", ()=>{
 				beforeEach(()=>{
 					TestHelper.prepEnvironment();
 					TestHelper.initEnvironment();
 					TestHelper.initLibUiApp();
 					return TestHelper.installPackage(['request']);
 				});
-				it("adds pkg to app", ()=>{
+				it("adds pkg to root", ()=>{
 					expect(TestHelper.ensureFileExists("node_modules")).to.equal(true);
 					expect(TestHelper.ensureFileExists([TestHelper.getLibUiPath(), "node_modules"])).to.equal(false);
-					expect(TestHelper.getRootConfig().packages).to.have.property("request");
-					expect(TestHelper.getRootConfig().packages.request).to.be.a("string");
+					expect(TestHelper.getRootConfigObject().packages).to.have.property("request");
+					expect(TestHelper.getRootConfigObject().packages.request).to.be.a("string");
 					return AppExec("lib-ui", "add", "request").then(()=>{
 						expect(TestHelper.ensureFileExists([TestHelper.getLibUiPath(), "node_modules"])).to.equal(false);
 						const rootConfig = TestHelper.getRootConfig();
-						expect(rootConfig.packages).to.have.property("request");
-						expect(rootConfig.packages.request).to.be.a("string");
-						expect(RootConfigHelper.getAppPackages(rootConfig)).to.eql(["request"]);
-
-						const appPackageJson = TestHelper.getJsonContents(TestHelper.getLibUiPath());
-						expect(PackageHelper.getInstalled(appPackageJson)).to.have.property("request");
-						TestHelper.expectStaticVersion(PackageHelper.getInstalled(appPackageJson).request);
+						expect(rootConfig.getPackages()).to.have.property("request");
+						expect(rootConfig.getPackages().request).to.be.a("string");
+						TestHelper.expectStaticVersions(rootConfig.packages);
 					});
 				});
 				it("installs package and then updates an attached app with package as well", ()=>{
 
+					// return TestHelper.installPackage(['request']);
+					//
+					// const appPackageJson = TestHelper.getJsonContents(TestHelper.getLibUiPath());
+					// expect(PackageHelper.getInstalled(appPackageJson)).to.not.have.property("request");
+					// TestHelper.expectStaticVersions(PackageHelper.getInstalled(appPackageJson));
 				});
 				it("ensures to update the package.json of an app indirectly attached view parent", ()=>{
 

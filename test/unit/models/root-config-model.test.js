@@ -1,9 +1,8 @@
 import {expect} from 'chai';
 import chai from 'chai';
-import {RootConfigHelper} from "../../../src/helpers/root-config-helper";
-const chaiAsPromised = require("chai-as-promised");
+import RootConfigModel from "../../../src/models/root-config.model";
 
-const nestedConfig = {
+const nestedConfig =  new RootConfigModel({
 	apps: {
 		"common-server": {
 			path: null,
@@ -74,25 +73,25 @@ const nestedConfig = {
 			devPackages: []
 		}
 	}
-};
+});
 
 
-describe("helpers/root-config-helper", ()=>{
+describe("models/root-config-model", ()=>{
 	describe("buildAppPackageList", ()=> {
 		it("constructs a package deps list", ()=>{
-			expect(RootConfigHelper.buildAppPackageList(nestedConfig, "common-ui", "packages"))
+			expect(nestedConfig.buildAppPackageList("common-ui", "packages"))
 				.to.eql(["backbone", "moment", "react", "timegraph"]);
-			expect(RootConfigHelper.buildAppPackageList(nestedConfig, "ui-app-child", "packages"))
+			expect(nestedConfig.buildAppPackageList("ui-app-child", "packages"))
 				.to.eql(["backbone", "moment", "react", "timegraph"]);
 		});
 		it("constructs a devPackages deps list", ()=>{
-			expect(RootConfigHelper.buildAppPackageList(nestedConfig, "ui-app", "devPackages"))
+			expect(nestedConfig.buildAppPackageList("ui-app", "devPackages"))
 				.to.eql(["chai", "mocha", "react-tester"]);
 		});
 	});
 	describe("getRequiredAppDeps", ()=>{
 		it("does a basic list",()=>{
-			const config = {
+			const rootConfig = new RootConfigModel({
 				apps: {
 					"common": {
 						path: null,
@@ -113,33 +112,33 @@ describe("helpers/root-config-helper", ()=>{
 						devPackages: []
 					}
 				}
-			};
+			});
 
-			expect(RootConfigHelper.getRequiredAppDeps(config, "common")).to.eql([]);
-			expect(RootConfigHelper.getRequiredAppDeps(config, "common-ui")).to.eql(["common"]);
-			expect(RootConfigHelper.getRequiredAppDeps(config, "ui-app")).to.eql(["common", "common-ui"]);
+			expect(rootConfig.getRequiredAppDeps("common")).to.eql([]);
+			expect(rootConfig.getRequiredAppDeps("common-ui")).to.eql(["common"]);
+			expect(rootConfig.getRequiredAppDeps("ui-app")).to.eql(["common", "common-ui"]);
 
 		});
 		it("does a nested complicated sort",()=>{
 
-			expect(RootConfigHelper.getRequiredAppDeps(nestedConfig, "common"))
+			expect(nestedConfig.getRequiredAppDeps("common"))
 				.to.eql(["common", "common-x"]);
-			expect(RootConfigHelper.getRequiredAppDeps(nestedConfig, "common-x"))
+			expect(nestedConfig.getRequiredAppDeps("common-x"))
 				.to.eql(["common", "common-x"]);
-			expect(RootConfigHelper.getRequiredAppDeps(nestedConfig, "common-ui"))
+			expect(nestedConfig.getRequiredAppDeps("common-ui"))
 				.to.eql(["common", "common-ui", "common-x", "heading-common-ui"]);
-			expect(RootConfigHelper.getRequiredAppDeps(nestedConfig, "ui-app"))
+			expect(nestedConfig.getRequiredAppDeps("ui-app"))
 				.to.eql(["common", "common-ui", "common-x", "heading-common-ui"]);
-			expect(RootConfigHelper.getRequiredAppDeps(nestedConfig, "ui-app-child"))
+			expect(nestedConfig.getRequiredAppDeps("ui-app-child"))
 				.to.eql(["common", "common-ui", "common-x", "heading-common-ui", "ui-app"]);
-			expect(RootConfigHelper.getRequiredAppDeps(nestedConfig, "server-app"))
+			expect(nestedConfig.getRequiredAppDeps("server-app"))
 				.to.eql(["common", "common-server", "common-x"]);
 
 		});
 	});
 	describe("collectAppPackages", ()=>{
 		it("compiles package list from apps", ()=> {
-			const config = {
+			const config = new RootConfigModel({
 				apps: {
 					"common": {
 						path: null,
@@ -181,25 +180,25 @@ describe("helpers/root-config-helper", ()=>{
 						devPackages: []
 					},
 				}
-			};
-			expect(RootConfigHelper.collectAppPackages(config, ["common"], "packages"))
+			});
+			expect(config.collectAppPackages(["common"], "packages"))
 				.to.eql(["moment", "request"]);
-			expect(RootConfigHelper.collectAppPackages(config, ["common"], "devPackages"))
+			expect(config.collectAppPackages(["common"], "devPackages"))
 				.to.eql(["chai", "mocha"]);
 
-			expect(RootConfigHelper.collectAppPackages(config, ["common", "common-ui"], "packages"))
+			expect(config.collectAppPackages(["common", "common-ui"], "packages"))
 				.to.eql(["moment", "react", "request"]);
-			expect(RootConfigHelper.collectAppPackages(config, ["common", "common-ui"], "devPackages"))
+			expect(config.collectAppPackages(["common", "common-ui"], "devPackages"))
 				.to.eql(["chai", "mocha"]);
 
-			expect(RootConfigHelper.collectAppPackages(config, ["common", "common-ui", "ui-app"], "packages"))
+			expect(config.collectAppPackages(["common", "common-ui", "ui-app"], "packages"))
 				.to.eql(["backbone", "moment", "react", "request"]);
-			expect(RootConfigHelper.collectAppPackages(config, ["ui-app", "common", "common-ui"], "devPackages"))
+			expect(config.collectAppPackages(["ui-app", "common", "common-ui"], "devPackages"))
 				.to.eql(["chai", "mocha", "needles"]);
 
-			expect(RootConfigHelper.collectAppPackages(config, ["null-app", "common", "common-ui", "ui-app"], "packages"))
+			expect(config.collectAppPackages(["null-app", "common", "common-ui", "ui-app"], "packages"))
 				.to.eql(["backbone", "moment", "react", "request"]);
-			expect(RootConfigHelper.collectAppPackages(config, ["ui-app", "null-app", "common", "common-ui"], "devPackages"))
+			expect(config.collectAppPackages(["ui-app", "null-app", "common", "common-ui"], "devPackages"))
 				.to.eql(["chai", "mocha", "needles"]);
 
 		});

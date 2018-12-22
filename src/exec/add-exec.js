@@ -1,6 +1,5 @@
 import {FsHelper} from "../helpers/fs-helper";
 import {ErrorMessages} from "../error-messages";
-import {RootConfigHelper} from "../helpers/root-config-helper";
 
 export const AddExec = (appName, appLocation) => {
 	const rootConfig = FsHelper.getRootConfig();
@@ -14,10 +13,10 @@ export const AddExec = (appName, appLocation) => {
 	}
 
 	if(!FsHelper.exists(appLocation)){
-		throw new Error(`${ErrorMessages.APP_LOCATION_INVALID}: `)
+		throw new Error(`${ErrorMessages.APP_LOCATION_INVALID}: ${appLocation}`)
 	}
 
-	RootConfigHelper.addApp(rootConfig, appName, appLocation);
+	rootConfig.addApp(appName, appLocation);
 	FsHelper.saveRootConfig(rootConfig);
 
 

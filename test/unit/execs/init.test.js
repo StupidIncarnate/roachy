@@ -14,7 +14,6 @@ describe("cmd: init", ()=>{
 		expect(configJson).to.have.property("version", 0.1);
 		expect(configJson).to.have.property("apps").and.to.be.an("object");
 		expect(configJson).to.have.property("packages").and.to.be.an("object");
-		expect(configJson).to.have.property("devPackages").and.to.be.an("object");
 
 	})
 });
