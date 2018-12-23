@@ -3,27 +3,37 @@ import {ErrorMessages} from "../error-messages";
 
 import {AttachCmd} from "./app/attach-cmd";
 import {AddCmd} from "./app/add-cmd";
+import {PACKAGE_TYPES} from "../models/root-app-config.model";
+import {NpmExecHelper} from "../helpers/npm-exec-helper";
 
 export const AppExec = (appName, subCommand, ...subCommandArgs) => {
-	const rootConfig = FsHelper.getRootConfig();
+	let rootConfig = FsHelper.getRootConfig();
 
 	if(!rootConfig.hasApp(appName)) {
 		throw new Error(`${ErrorMessages.UNKNOWN_APP}: ${appName}`);
 	}
 
-	switch(subCommand) {
-		case "attach":
-			return AttachCmd(appName, subCommandArgs.shift());
-			break;
-		case "add":
+	return Promise.resolve().then(()=>{
+		switch(subCommand) {
 			/**
-			 * in case packages come in as multi dimensional
+			 * Attach child App to parent app
 			 */
-			subCommandArgs = [].concat(...subCommandArgs);
-			return AddCmd(appName, subCommandArgs);
-			break;
-		default:
-			throw new Error(ErrorMessages.UNKNOWN_APP_COMMAND + " " + subCommand);
-	}
+			case "attach":
+				return AttachCmd(appName, subCommandArgs.shift());
+				break;
+			case "add":
+				/**
+				 * in case packages come in as multi dimensional
+				 */
+				subCommandArgs = [].concat(...subCommandArgs);
+				/**
+				 * Add package(s) to app
+				 */
+				return AddCmd(appName, subCommandArgs);
+				break;
+			default:
+				throw new Error(ErrorMessages.UNKNOWN_APP_COMMAND + " " + subCommand);
+		}
+	}).then(FsHelper.regenAppPackageJsons);
 
 };

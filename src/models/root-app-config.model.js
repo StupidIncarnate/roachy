@@ -13,6 +13,9 @@ export default class RootAppConfigModel {
 		 */
 		this.config = configObj;
 	}
+	getPath() {
+		return this.config.path;
+	}
 	hasAttachedApp(appName) {
 		return this.config.attachedApps.indexOf(appName) !== -1;
 	}

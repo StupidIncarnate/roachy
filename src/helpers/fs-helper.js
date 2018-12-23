@@ -4,6 +4,8 @@ import fsExtra from 'fs-extra';
 import {REF} from "../config";
 import {ErrorMessages} from "../error-messages";
 import RootConfigModel from "../models/root-config.model";
+import {PACKAGE_TYPES} from "../models/root-app-config.model";
+import {NpmExecHelper} from "./npm-exec-helper";
 
 export const FsHelper = {
 	cwd() {
@@ -44,10 +46,13 @@ export const FsHelper = {
 	ensureRootPath() {
 		process.chdir(this.getRootPath(this.cwd()));
 	},
+	changeCwd(pathArr) {
+		process.chdir(this.getPath(pathArr));
+	},
 	exists(pathArr) {
 		return fs.existsSync(this.getPath(pathArr));
 	},
-	openJson(folderPath) {
+	openPackageJson(folderPath) {
 		return fsExtra.readJsonSync(path.join(folderPath, "package.json"));
 	},
 	writeJson(path, contents) {
@@ -81,5 +86,43 @@ export const FsHelper = {
 	},
 	saveRootConfig(config) {
 		this.writeJson(FsHelper.getPath(REF.configName), config.toJSON());
+	},
+	getAppPackageJson(appConfig) {
+		return this.openPackageJson(this.getPath(appConfig.getPath()));
+	},
+	saveAppPackageJson(appConfig, pkgJson) {
+		return this.writeJson(this.getPath([appConfig.getPath(), "package.json"]), pkgJson);
+	},
+	regenAppPackageJsons() {
+		/**
+		 * re-pull for struct changes
+		 */
+		let rootConfig = FsHelper.getRootConfig();
+
+		const cwd = FsHelper.cwd();
+		/**
+		 * Rebuild package.jsons for each app
+		 */
+		let p = Promise.resolve();
+		for(const appName of rootConfig.getAppNames()) {
+
+			p = p.then(()=>{
+				const appConfig = rootConfig.getApp(appName);
+				const appPackageJson = FsHelper.getAppPackageJson(appConfig);
+				appPackageJson.dependencies = rootConfig.buildPackageDepList(appName, PACKAGE_TYPES.PACKAGES);
+				appPackageJson.devDpendencies = rootConfig.buildPackageDepList(appName, PACKAGE_TYPES.DEV_PACKAGES);
+
+				FsHelper.saveAppPackageJson(appConfig, appPackageJson);
+
+				FsHelper.changeCwd(appConfig.getPath());
+				return NpmExecHelper.writePackageLock();
+			});
+
+		}
+
+		p = p.then(()=>{
+			FsHelper.changeCwd(cwd);
+		});
+		return p;
 	}
 };

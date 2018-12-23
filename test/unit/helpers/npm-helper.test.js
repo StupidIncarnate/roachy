@@ -20,22 +20,22 @@ describe("helper/npm-helper", ()=>{
 				.to.be.rejectedWith(Error, ErrorMessages.UNKNOWN_PACKAGE);
 		});
 		it("installs single npm package without version", ()=>{
-			let rootPackage = FsHelper.openJson(TestHelper.getTestArea());
+			let rootPackage = FsHelper.openPackageJson(TestHelper.getTestArea());
 			let deps = PackageHelper.getInstalled(rootPackage);
 			expect(deps).to.not.have.property("request");
 			return NpmExecHelper.install(["request"]).then(()=>{
-				let rootPackage = FsHelper.openJson(TestHelper.getTestArea());
+				let rootPackage = FsHelper.openPackageJson(TestHelper.getTestArea());
 				expect(PackageHelper.getInstalled(rootPackage)).to.have.property("request");
 				expect(PackageHelper.getInstalled(rootPackage).request).to.be.a("string");
 			});
 		});
 		it("installs multiple npm packages", ()=> {
-			let rootPackage = FsHelper.openJson(TestHelper.getTestArea());
+			let rootPackage = FsHelper.openPackageJson(TestHelper.getTestArea());
 			let deps = PackageHelper.getInstalled(rootPackage);
 			expect(deps).to.not.have.property("request");
 			expect(deps).to.not.have.property("chai");
 			return NpmExecHelper.install(["request", "chai"]).then(()=>{
-				let rootPackage = FsHelper.openJson(TestHelper.getTestArea());
+				let rootPackage = FsHelper.openPackageJson(TestHelper.getTestArea());
 				expect(PackageHelper.getInstalled(rootPackage)).to.have.property("request");
 				expect(PackageHelper.getInstalled(rootPackage).request).to.be.a("string");
 				expect(PackageHelper.getInstalled(rootPackage)).to.have.property("chai");

@@ -8,9 +8,16 @@ import {InstallExec} from "../../src/exec/install-exec";
 import chai, {expect} from "chai";
 import {AppExec} from "../../src/exec/app-exec";
 import RootConfigModel from "../../src/models/root-config.model";
+import {FsHelper} from "../../src/helpers/fs-helper";
 const currentDir = __dirname;
 
 chai.use(require("chai-match"));
+
+export const AppNames = {
+	LIB_COMMON: "lib-common",
+	LIB_UI: "lib-ui",
+	TIMEWATCH_UI: "timewatch-ui"
+};
 
 export const TestHelper = {
 	getTestArea: ()=> path.join(currentDir, "..", "stg"),
@@ -41,6 +48,9 @@ export const TestHelper = {
 		fsExtra.copySync(path.join(__dirname, "..", "bootstrap-structure"), this.getTestArea());
 		process.chdir(this.getTestArea());
 	},
+	getLibCommonPath(){
+		return "src/lib/lib-common";
+	},
 	getLibUiPath(){
 		return "src/lib/lib-ui";
 	},
@@ -49,6 +59,9 @@ export const TestHelper = {
 	},
 	initEnvironment() {
 		InitExec();
+	},
+	initLibCommonApp(){
+		AddExec("lib-common", this.getLibCommonPath());
 	},
 	initLibUiApp() {
 		AddExec("lib-ui", this.getLibUiPath());
@@ -62,10 +75,23 @@ export const TestHelper = {
 	addPackageToApp(appName, pkgs) {
 		return AppExec(appName, "add", pkgs);
 	},
+	attachApp(parentAppName, childAppName) {
+		return AppExec(parentAppName, "attach", childAppName);
+	},
 
 	expectStaticVersions(pkgObj) {
 		for(const pkg in pkgObj) {
 			expect(pkgObj[pkg]).to.match(/^\d+\.\d+\.\d+$/);
 		}
+	},
+	expectAppPackageJsonDeps(appName, pkgs) {
+		const rootConfig = this.getRootConfig();
+		const appPackageJson = FsHelper.getAppPackageJson(rootConfig.getApp(appName));
+		pkgs.forEach(pkg => {
+			expect(appPackageJson.dependencies).to.have.property(pkg);
+		});
+		TestHelper.expectStaticVersions(appPackageJson.dependencies);
+
+		return appPackageJson;
 	}
 };

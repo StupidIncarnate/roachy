@@ -30,5 +30,11 @@ export const NpmExecHelper = {
 			}
 		});
 	},
+	writePackageLock() {
+		const cmd = `npm install --package-lock-only`;
+		return NpmExecHelper.exec(cmd).catch(e =>{
+			throw new Error(ErrorMessages.UNKNOWN_NPM_ERROR);
+		});
+	}
 
 };

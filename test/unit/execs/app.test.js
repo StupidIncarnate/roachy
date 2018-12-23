@@ -2,7 +2,6 @@ import {TestHelper} from "../../helpers/test-helper";
 import {expect} from 'chai';
 
 import {ErrorMessages} from "../../../src/error-messages";
-import {REF} from "../../../src/config";
 import {AppExec} from "../../../src/exec/app-exec";
 
 describe("cmd: app", () => {
@@ -25,7 +24,7 @@ describe("cmd: app", () => {
                 expect(()=>AppExec("lib", "install", "request")).to.throw(ErrorMessages.UNKNOWN_APP);
             });
             it("errors if sub command not recognized", () =>{
-                expect(()=> AppExec("lib-ui", "installxx", "request")).to.throw(ErrorMessages.UNKNOWN_APP_COMMAND)
+                return expect(AppExec("lib-ui", "installxx", "request")).to.be.rejectedWith(Error, ErrorMessages.UNKNOWN_APP_COMMAND)
             });
         });
     })

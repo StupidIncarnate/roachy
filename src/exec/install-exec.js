@@ -36,7 +36,7 @@ const outputChangedPackages = (oldPackages) => {
 	 * TODO need to regen apps using any packages that changed versions
 	 */
 
-	return changeObj;
+	return FsHelper.regenAppPackageJsons();
 };
 export const InstallExec = (packages) => {
 	FsHelper.getRootConfig();
@@ -51,9 +51,10 @@ export const InstallExec = (packages) => {
 	const oldInstalled = PackageHelper.getDevInstalled(rootPackage);
 
 	return NpmExecHelper.install(packages, true).then(()=>{
-		outputChangedPackages(oldInstalled);
+		return outputChangedPackages(oldInstalled);
 	}).catch(e =>{
-		outputChangedPackages(oldInstalled);
-		throw e;
+		return outputChangedPackages(oldInstalled).then(()=>{
+			throw e;
+		});
 	});
 };

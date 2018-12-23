@@ -1,4 +1,4 @@
-import RootAppConfigModel from "./root-app-config.model";
+import RootAppConfigModel, {PACKAGE_TYPES} from "./root-app-config.model";
 import {ErrorMessages} from "../error-messages";
 
 export default class RootConfigModel {
@@ -77,6 +77,19 @@ export default class RootConfigModel {
 	/**
 	 * Dependency Tree Builder
 	 */
+	/**
+	 * Builds obj of dependencies or devDeps to put into an app package json
+	 */
+	buildPackageDepList(appName, packageType) {
+		const rootPackageList = this.getPackages(), pkgObj = {};
+		this.buildAppPackageList(appName, packageType).forEach(pkgName => {
+			if(!rootPackageList[pkgName]) {
+				throw new Error(`${pkgName} has not been added to roachy. 'roachy add ${pkgName}'`);
+			}
+			pkgObj[pkgName] = rootPackageList[pkgName];
+		});
+		return pkgObj;
+	}
 	/**
 	 * @param appName
 	 * @param packageType packages || devPackages

@@ -3,7 +3,6 @@ import {expect} from 'chai';
 
 import {ErrorMessages} from "../../../src/error-messages";
 import {AddExec} from "../../../src/exec/add-exec";
-import {REF} from "../../../src/config";
 
 describe("cmd: add", () => {
 	describe("Bad State", () => {
