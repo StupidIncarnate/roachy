@@ -64,7 +64,7 @@ export const TestHelper = {
 		return "src/apps/timewatch-app/ui";
 	},
 	initEnvironment() {
-		InitExec();
+		return InitExec();
 	},
 	initLibCommonApp(){
 		return AddExec("lib-common", this.getLibCommonPath());

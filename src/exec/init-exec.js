@@ -3,7 +3,69 @@ import fs from 'fs';
 import {REF} from "../config";
 import {FsHelper} from "../helpers/fs-helper";
 import RootConfigModel from "../models/root-config.model";
+import {NpmExecHelper} from "../helpers/npm-exec-helper";
+import {PackageHelper} from "../helpers/package-helper";
 
+const processPkgJson = ()=> {
+	return Promise.resolve().then(()=>{
+		const rootPackageJsonPath = FsHelper.joinPath([FsHelper.cwd(), "package.json"]);
+		if(FsHelper.exists(rootPackageJsonPath)) {
+			let rootPackageJson = FsHelper.openPackageJson(FsHelper.cwd());
+			const consolidatedPkgs = {};
+			for(const pkg in PackageHelper.getInstalled(rootPackageJson)) {
+				consolidatedPkgs[pkg] = PackageHelper.getInstalled(rootPackageJson)[pkg];
+			}
+			for(const pkg in PackageHelper.getDevInstalled(rootPackageJson)) {
+				consolidatedPkgs[pkg] = PackageHelper.getDevInstalled(rootPackageJson)[pkg];
+			}
+
+			const packageList = [];
+			for(const pkg in consolidatedPkgs) {
+				packageList.push(`${pkg}@${consolidatedPkgs[pkg]}`);
+			}
+
+			if(process.env.NODE_ENV !== "testing") {
+				packageList.push("roachy");
+			}
+
+			rootPackageJson.dependencies = {};
+			rootPackageJson.devDependencies = {};
+
+			FsHelper.writeJson(rootPackageJsonPath, rootPackageJson);
+
+			return NpmExecHelper.install(packageList, true).then(()=>{
+				/**
+				 * Reopen to pull package versions
+				 */
+				const installedPkgObj = FsHelper.getPackageJsonDeps(FsHelper.cwd());
+				const rootConfig = FsHelper.getRootConfig();
+				rootConfig.addPackages(installedPkgObj);
+				FsHelper.saveRootConfig(rootConfig);
+			});
+
+		} else {
+			FsHelper.writeJson(rootPackageJsonPath, {
+				name: "app-commander",
+				private: true,
+				description: "app-commander",
+				version: "0.0.1",
+				scripts: {
+					"roachy": "roachy"
+				},
+				dependencies: {
+
+				},
+				devDependencies: {
+
+				}
+			});
+
+			if(process.env.NODE_ENV !== "testing") {
+				return NpmExecHelper.install(["roachy"], true);
+			}
+		}
+	});
+};
 export const InitExec = () => {
 
 	const initPath = FsHelper.joinPath([FsHelper.cwd(), REF.configName]);
@@ -17,6 +79,8 @@ export const InitExec = () => {
 	 */
 	FsHelper.writeJson(initPath, RootConfigModel.getDefaultStructure());
 
-	console.log(chalk.blue(`Roachy Init'd. Let roachy know what projects to keep track of via`), chalk.green("roachy add <appName> <appLocation>"));
+	return processPkgJson().then(()=>{
+		console.log(chalk.blue(`Roachy Init'd. Let roachy know what projects to keep track of via`), chalk.green("roachy add <appName> <appLocation>"));
 
+	});
 };

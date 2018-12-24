@@ -1,5 +1,6 @@
 import RootAppConfigModel, {PACKAGE_TYPES} from "./root-app-config.model";
 import {ErrorMessages} from "../error-messages";
+import {PackageHelper} from "../helpers/package-helper";
 
 export default class RootConfigModel {
 	static getDefaultStructure() {
@@ -70,7 +71,7 @@ export default class RootConfigModel {
 	}
 	addPackages(pkgObj) {
 		for(const pkg in pkgObj) {
-			this.getPackages()[pkg] = pkgObj[pkg];
+			this.getPackages()[pkg] = PackageHelper.getCheckableVersion(pkgObj[pkg]);
 		}
 	}
 

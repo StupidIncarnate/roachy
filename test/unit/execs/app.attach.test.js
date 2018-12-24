@@ -9,8 +9,8 @@ describe("cmd: app.attach", () => {
 	describe("Bad Calls", ()=>{
 		beforeEach(()=>{
 			TestHelper.prepEnvironment();
-			TestHelper.initEnvironment();
-			return TestHelper.initLibUiApp();
+			return TestHelper.initEnvironment()
+				.then(()=> TestHelper.initLibUiApp())
 		});
 		it("errors if child app is not recognized", ()=>{
 			return expect(AppExec(AppNames.LIB_UI, "attach", "lib")).to.be.rejectedWith(ErrorMessages.UNKNOWN_APP);
@@ -22,8 +22,8 @@ describe("cmd: app.attach", () => {
 	describe("Good State", ()=>{
 		beforeEach(()=>{
 			TestHelper.prepEnvironment();
-			TestHelper.initEnvironment();
-			return TestHelper.initLibUiApp()
+			return TestHelper.initEnvironment()
+				.then(()=> TestHelper.initLibUiApp())
 				.then(()=> TestHelper.initTimewatcherUiLibUiApp())
 				.then(()=> TestHelper.installPackage(['request']));
 		});

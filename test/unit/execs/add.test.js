@@ -20,7 +20,7 @@ describe("cmd: add", () => {
 		describe("After Init", ()=> {
 			beforeEach(()=>{
 				TestHelper.prepEnvironment();
-				TestHelper.initEnvironment();
+				return TestHelper.initEnvironment();
 			});
 			it("errors if appName not passed", () => {
 				expect(() => AddExec()).to.throw(ErrorMessages.APP_NAME_REQUIRED);
@@ -45,7 +45,7 @@ describe("cmd: add", () => {
 		describe("Basic Add", ()=>{
 			beforeEach(()=>{
 				TestHelper.prepEnvironment();
-				TestHelper.initEnvironment();
+				return TestHelper.initEnvironment();
 			});
 			it("adds an app to config", ()=>{
 				const appName = "lib-ui";
@@ -65,7 +65,7 @@ describe("cmd: add", () => {
 		describe("Without package.json", ()=>{
 			beforeEach(()=>{
 				TestHelper.prepEnvironment();
-				TestHelper.initEnvironment();
+				return TestHelper.initEnvironment();
 			});
 			it("adds app and adds package.json", ()=>{
 
@@ -92,7 +92,7 @@ describe("cmd: add", () => {
 		describe("With package.json", ()=>{
 			beforeEach(()=>{
 				TestHelper.prepEnvironment();
-				TestHelper.initEnvironment();
+				return TestHelper.initEnvironment();
 			});
 			afterEach(()=>{
 				FsHelper.changeCwd(TestHelper.getTestArea());
@@ -134,7 +134,7 @@ describe("cmd: add", () => {
 						 */
 						let rootConfig = TestHelper.getRootConfig();
 						expect(rootConfig.getAppNames()).to.eql([]);
-						expect(rootConfig.getPackages()).to.eql({});
+						expect(Object.keys(rootConfig.getPackages())).to.eql(["moment"]);
 
 						return AddExec("lib-ui", TestHelper.getLibUiPath()).then(() => {
 							/**

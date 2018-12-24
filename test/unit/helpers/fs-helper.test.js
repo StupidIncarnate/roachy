@@ -7,7 +7,7 @@ import {ErrorMessages} from "../../../src/error-messages";
 describe("helper/fs-helper", ()=>{
 	beforeEach(()=>{
 		TestHelper.prepEnvironment();
-		TestHelper.initEnvironment();
+		return TestHelper.initEnvironment();
 	});
 
 	it("finds root config in current dir", ()=>{

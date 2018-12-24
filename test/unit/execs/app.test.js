@@ -17,8 +17,8 @@ describe("cmd: app", () => {
         describe("Bad Calls", ()=>{
             beforeEach(()=>{
                 TestHelper.prepEnvironment();
-                TestHelper.initEnvironment();
-                return TestHelper.initLibUiApp();
+                return TestHelper.initEnvironment()
+                    .then(()=> TestHelper.initLibUiApp())
             });
             it("errors if app is not recognized", ()=>{
                 expect(()=>AppExec("lib", "install", "request")).to.throw(ErrorMessages.UNKNOWN_APP);

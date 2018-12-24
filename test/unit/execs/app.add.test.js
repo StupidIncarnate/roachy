@@ -11,8 +11,8 @@ describe("cmd: app.add", () => {
 		describe("Bad Calls", ()=>{
 			beforeEach(()=>{
 				TestHelper.prepEnvironment();
-				TestHelper.initEnvironment();
-				return TestHelper.initLibUiApp();
+				return TestHelper.initEnvironment()
+					.then(()=> TestHelper.initLibUiApp());
 			});
 			it("errors if no packages supplied to install", ()=>{
 				return expect(AppExec(AppNames.LIB_UI, "add")).to.be.rejectedWith(Error, ErrorMessages.PACKAGES_REQUIRED);
@@ -25,8 +25,8 @@ describe("cmd: app.add", () => {
 			describe("Adds package to roachy", ()=>{
 				beforeEach(()=>{
 					TestHelper.prepEnvironment();
-					TestHelper.initEnvironment();
-					return TestHelper.initLibCommonApp()
+					return TestHelper.initEnvironment()
+						.then(()=> TestHelper.initLibCommonApp())
 						.then(()=> TestHelper.initLibUiApp())
 						.then(()=> TestHelper.initTimewatcherUiLibUiApp())
 						.then(()=> TestHelper.installPackage(['request']))
@@ -170,8 +170,8 @@ describe("cmd: app.add", () => {
 			describe("Installs existing package", ()=>{
 				beforeEach(()=>{
 					TestHelper.prepEnvironment();
-					TestHelper.initEnvironment();
-					return TestHelper.initLibUiApp()
+					return TestHelper.initEnvironment()
+						.then(()=> TestHelper.initLibUiApp())
 						.then(()=> TestHelper.initTimewatcherUiLibUiApp())
 						.then(()=> TestHelper.installPackage(['request@2.66.0']))
 				});

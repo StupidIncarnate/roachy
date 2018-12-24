@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "author": "StupidIncarnate",
   "scripts": {
-    "test": "mocha test/unit/**/*.test.js --require @babel/register --reporter mocha-junit-reporter",
+    "test": "cross-env NODE_ENV=testing mocha test/unit/**/*.test.js --require @babel/register --reporter mocha-junit-reporter",
     "prebuild": "npm run test",
     "build": "babel src --out-dir dist",
     "prepare": "npm run build",
@@ -27,6 +27,7 @@
     "chai": "^4.2.0",
     "chai-match": "^1.1.1",
     "chai-string": "^1.5.0",
+    "cross-env": "^5.2.0",
     "mocha": "^5.2.0",
     "mocha-junit-reporter": "^1.18.0"
   },

@@ -13,7 +13,7 @@ describe("helper/npm-helper", ()=>{
 	describe("Install", ()=>{
 		beforeEach(()=>{
 			TestHelper.prepEnvironment();
-			TestHelper.initEnvironment();
+			return TestHelper.initEnvironment();
 		});
 		it("errors on unknown package", ()=> {
 			return expect(NpmExecHelper.install(["jsdkjsd"]))
