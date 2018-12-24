@@ -12,7 +12,7 @@ describe("cmd: app.add", () => {
 			beforeEach(()=>{
 				TestHelper.prepEnvironment();
 				TestHelper.initEnvironment();
-				TestHelper.initLibUiApp();
+				return TestHelper.initLibUiApp();
 			});
 			it("errors if no packages supplied to install", ()=>{
 				return expect(AppExec(AppNames.LIB_UI, "add")).to.be.rejectedWith(Error, ErrorMessages.PACKAGES_REQUIRED);
@@ -26,10 +26,10 @@ describe("cmd: app.add", () => {
 				beforeEach(()=>{
 					TestHelper.prepEnvironment();
 					TestHelper.initEnvironment();
-					TestHelper.initLibCommonApp();
-					TestHelper.initLibUiApp();
-					TestHelper.initTimewatcherUiLibUiApp();
-					return TestHelper.installPackage(['request']);
+					return TestHelper.initLibCommonApp()
+						.then(()=> TestHelper.initLibUiApp())
+						.then(()=> TestHelper.initTimewatcherUiLibUiApp())
+						.then(()=> TestHelper.installPackage(['request']))
 				});
 				it("adds pkg to root", ()=>{
 					expect(TestHelper.ensureFileExists("node_modules")).to.equal(true);
@@ -171,9 +171,9 @@ describe("cmd: app.add", () => {
 				beforeEach(()=>{
 					TestHelper.prepEnvironment();
 					TestHelper.initEnvironment();
-					TestHelper.initLibUiApp();
-					TestHelper.initTimewatcherUiLibUiApp();
-					return TestHelper.installPackage(['request@2.66.0']);
+					return TestHelper.initLibUiApp()
+						.then(()=> TestHelper.initTimewatcherUiLibUiApp())
+						.then(()=> TestHelper.installPackage(['request@2.66.0']))
 				});
 				it("installs newer version and updates app", ()=>{
 

@@ -1,6 +1,9 @@
 {
   "name": "timewatch-ui",
   "version": "1.0.0",
+  "private": true,
+  "description": "description",
+  "license": "MIT",
   "scripts": {
     "start": "node index.js"
   },

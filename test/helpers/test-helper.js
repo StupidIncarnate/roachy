@@ -22,6 +22,9 @@ export const AppNames = {
 export const TestHelper = {
 	getTestArea: ()=> path.join(currentDir, "..", "stg"),
 	formatPath(pathArr) {
+		if(!pathArr) {
+			pathArr = [];
+		}
 		if(!Array.isArray(pathArr)) {
 			pathArr = [pathArr];
 		}
@@ -43,6 +46,9 @@ export const TestHelper = {
 	ensureFileExists(pathArr){
 		return fs.existsSync(this.formatPath(pathArr));
 	},
+	deletePath(pathArr) {
+		return fsExtra.removeSync(this.formatPath(pathArr));
+	},
 	prepEnvironment() {
 		fsExtra.emptyDirSync(this.getTestArea());
 		fsExtra.copySync(path.join(__dirname, "..", "bootstrap-structure"), this.getTestArea());
@@ -61,13 +67,13 @@ export const TestHelper = {
 		InitExec();
 	},
 	initLibCommonApp(){
-		AddExec("lib-common", this.getLibCommonPath());
+		return AddExec("lib-common", this.getLibCommonPath());
 	},
 	initLibUiApp() {
-		AddExec("lib-ui", this.getLibUiPath());
+		return AddExec("lib-ui", this.getLibUiPath());
 	},
 	initTimewatcherUiLibUiApp() {
-		AddExec("timewatch-ui", this.getTimewatchUiPath());
+		return AddExec("timewatch-ui", this.getTimewatchUiPath());
 	},
 	installPackage(pkg) {
 		return InstallExec([pkg]);

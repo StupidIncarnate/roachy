@@ -6,6 +6,8 @@ import {ErrorMessages} from "../error-messages";
 import RootConfigModel from "../models/root-config.model";
 import {PACKAGE_TYPES} from "../models/root-app-config.model";
 import {NpmExecHelper} from "./npm-exec-helper";
+import {PackageHelper} from "./package-helper";
+import chalk from "chalk";
 
 export const FsHelper = {
 	cwd() {
@@ -43,6 +45,15 @@ export const FsHelper = {
 
 		throw new Error(ErrorMessages.ROOT_NOT_FOUND);
 	},
+	deletePath(pathArr) {
+		if(FsHelper.exists(pathArr)) {
+			const deletePath = this.getPath(pathArr);
+			console.log(chalk.yellow(`Deleting ${deletePath}...`));
+			return fsExtra.removeSync(deletePath);
+		}
+
+		return true
+	},
 	ensureRootPath() {
 		process.chdir(this.getRootPath(this.cwd()));
 	},
@@ -57,6 +68,16 @@ export const FsHelper = {
 	},
 	writeJson(path, contents) {
 		fsExtra.writeJsonSync(path, contents, {spaces: '\t'});
+	},
+	getPackageJsonDeps(folderPath) {
+		const pkgJson = this.openPackageJson(this.getPath(folderPath));
+		const returnPkgs = PackageHelper.getDevInstalled(pkgJson);
+		const installedPkgs = PackageHelper.getInstalled(pkgJson);
+		for(const pkgName in installedPkgs) {
+			returnPkgs[pkgName] = PackageHelper.getCheckableVersion(installedPkgs[pkgName]);
+		}
+
+		return returnPkgs;
 	},
 	getRootConfig() {
 		try{
@@ -93,24 +114,25 @@ export const FsHelper = {
 	saveAppPackageJson(appConfig, pkgJson) {
 		return this.writeJson(this.getPath([appConfig.getPath(), "package.json"]), pkgJson);
 	},
-	regenAppPackageJsons() {
+	regenAppPackageJsons(appName) {
 		/**
 		 * re-pull for struct changes
 		 */
 		let rootConfig = FsHelper.getRootConfig();
 
 		const cwd = FsHelper.cwd();
+		const apps = appName ? [appName] : rootConfig.getAppNames();
 		/**
 		 * Rebuild package.jsons for each app
 		 */
 		let p = Promise.resolve();
-		for(const appName of rootConfig.getAppNames()) {
+		for(const appName of apps) {
 
 			p = p.then(()=>{
 				const appConfig = rootConfig.getApp(appName);
 				const appPackageJson = FsHelper.getAppPackageJson(appConfig);
 				appPackageJson.dependencies = rootConfig.buildPackageDepList(appName, PACKAGE_TYPES.PACKAGES);
-				appPackageJson.devDpendencies = rootConfig.buildPackageDepList(appName, PACKAGE_TYPES.DEV_PACKAGES);
+				appPackageJson.devDependencies = rootConfig.buildPackageDepList(appName, PACKAGE_TYPES.DEV_PACKAGES);
 
 				FsHelper.saveAppPackageJson(appConfig, appPackageJson);
 

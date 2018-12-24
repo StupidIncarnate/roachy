@@ -14,7 +14,7 @@ const args = ArgsHelper.getArgs();
 args.shift();
 
 try {
-	AppExec.apply(null, args);
+	return AppExec.apply(null, args);
 } catch(e) {
 	throw e;
 }

@@ -21,7 +21,7 @@ describe("cmd: install", () => {
 			beforeEach(()=>{
 				TestHelper.prepEnvironment();
 				TestHelper.initEnvironment();
-				TestHelper.initLibUiApp();
+				return TestHelper.initLibUiApp();
 			});
 			it("errors if nothing passed", () => {
 				expect(() => InstallExec([])).to.throw(ErrorMessages.PACKAGES_REQUIRED);

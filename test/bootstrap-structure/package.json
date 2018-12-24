@@ -1,6 +1,9 @@
 {
   "name": "test-bootstrap-structure",
   "version": "1.0.0",
+  "private": true,
+  "description": "description",
+  "license": "MIT",
   "devDependencies": {
     "moment": "^2.23.0"
   }

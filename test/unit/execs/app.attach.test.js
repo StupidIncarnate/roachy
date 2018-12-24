@@ -10,7 +10,7 @@ describe("cmd: app.attach", () => {
 		beforeEach(()=>{
 			TestHelper.prepEnvironment();
 			TestHelper.initEnvironment();
-			TestHelper.initLibUiApp();
+			return TestHelper.initLibUiApp();
 		});
 		it("errors if child app is not recognized", ()=>{
 			return expect(AppExec(AppNames.LIB_UI, "attach", "lib")).to.be.rejectedWith(ErrorMessages.UNKNOWN_APP);
@@ -23,9 +23,9 @@ describe("cmd: app.attach", () => {
 		beforeEach(()=>{
 			TestHelper.prepEnvironment();
 			TestHelper.initEnvironment();
-			TestHelper.initLibUiApp();
-			TestHelper.initTimewatcherUiLibUiApp();
-			return TestHelper.installPackage(['request']);
+			return TestHelper.initLibUiApp()
+				.then(()=> TestHelper.initTimewatcherUiLibUiApp())
+				.then(()=> TestHelper.installPackage(['request']));
 		});
 		it("attaches a child app to a parent with no packages", ()=>{
 			let rootConfig = TestHelper.getRootConfig();

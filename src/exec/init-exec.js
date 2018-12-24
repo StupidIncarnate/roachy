@@ -19,4 +19,4 @@ export const InitExec = () => {
 
 	console.log(chalk.blue(`Roachy Init'd. Let roachy know what projects to keep track of via`), chalk.green("roachy add <appName> <appLocation>"));
 
-}
+};

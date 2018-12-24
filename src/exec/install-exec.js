@@ -16,11 +16,7 @@ const outputChangedPackages = (oldPackages) => {
 		 * Changed if pkg was added or if version was changed
 		 */
 		if(!(pkg in oldPackages) || oldPackages[pkg] !== newPackages[pkg]) {
-			changeObj[pkg] = newPackages[pkg];
-
-			if(changeObj[pkg].indexOf("^") === 0) {
-				changeObj[pkg] = changeObj[pkg].substr(1);
-			}
+			changeObj[pkg] = PackageHelper.getCheckableVersion(newPackages[pkg]);
 			hasChanges = true;
 		}
 	}
@@ -42,7 +38,7 @@ export const InstallExec = (packages) => {
 	FsHelper.getRootConfig();
 
 	if(!packages.length) {
-		throw new Error(ErrorMessages.PACKAGES_REQUIRED)
+		throw new Error(ErrorMessages.PACKAGES_REQUIRED);
 	}
 
 	FsHelper.ensureRootPath();

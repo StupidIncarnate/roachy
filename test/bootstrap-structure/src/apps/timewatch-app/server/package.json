@@ -1,6 +1,9 @@
 {
   "name": "timewatch-server",
   "version": "1.0.0",
+  "private": true,
+  "description": "description",
+  "license": "MIT",
   "dependencies": {
     
   }

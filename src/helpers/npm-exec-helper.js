@@ -16,7 +16,7 @@ export const NpmExecHelper = {
 	},
 	install(packages, asDev) {
 
-		const cmd = `npm install ${asDev && '--save-dev'} ${packages.join(" ")}`
+		const cmd = `npm install ${asDev ? '--save-dev' : ''} ${packages.join(" ")}`
 		return NpmExecHelper.exec(cmd).then(msg => {
 			return true;
 		}).catch(e =>{

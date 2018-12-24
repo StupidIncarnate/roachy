@@ -11,7 +11,7 @@ const args =  ArgsHelper.getArgs();
 args.shift();
 
 try {
-	AddExec.apply(null, args);
+	return AddExec.apply(null, args);
 } catch(e) {
 	throw e;
 }

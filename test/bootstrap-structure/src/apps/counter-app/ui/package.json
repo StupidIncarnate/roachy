@@ -1,6 +1,9 @@
 {
   "name": "counter-ui",
   "version": "1.0.0",
+  "private": true,
+  "description": "description",
+  "license": "MIT",
   "dependencies": {
     
   }
