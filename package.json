@@ -38,6 +38,7 @@
   "bin": {
     "init": "./dist/commands/init",
     "add": "./dist/commands/add",
+    "app": "./dist/commands/app",
     "install": "./dist/commands/install"
   },
   "repository": {
