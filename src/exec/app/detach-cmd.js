@@ -1,12 +1,12 @@
 /**
- * Attaches a child app to a parent app for dependency referencing
+ * Detach an app from roachy
  */
 import {FsHelper} from "../../helpers/fs-helper";
 
-export const AttachCmd = (parentAppName, childAppName) => {
+export const DetachCmd = (parentAppName, childAppName) => {
 	let rootConfig = FsHelper.getRootConfig();
 
-	rootConfig.attachApp(parentAppName, childAppName);
+	rootConfig.detachApp(parentAppName, childAppName);
 	/**
 	 *  Add child to parent attached apps
 	 *  Regen package.json for parent

@@ -65,6 +65,20 @@ export default class RootConfigModel {
 		}
 
 	}
+	detachApp(parentApp, childApp) {
+		if(!this.hasApp(childApp)) {
+			throw new Error(`${ErrorMessages.UNKNOWN_APP} ${childApp}`);
+		}
+
+		if(parentApp === childApp) {
+			throw new Error(ErrorMessages.PARENT_CHILD_COLLISION);
+		}
+
+		const appConfig = this.getApp(parentApp);
+		if(appConfig.hasAttachedApp(childApp)) {
+			appConfig.getAttachedApps().splice(appConfig.getAttachedApps().indexOf(childApp), 1);
+		}
+	}
 
 	getPackages() {
 		return this.config.packages;

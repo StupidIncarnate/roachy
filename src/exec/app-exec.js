@@ -3,8 +3,7 @@ import {ErrorMessages} from "../error-messages";
 
 import {AttachCmd} from "./app/attach-cmd";
 import {AddCmd} from "./app/add-cmd";
-import {PACKAGE_TYPES} from "../models/root-app-config.model";
-import {NpmExecHelper} from "../helpers/npm-exec-helper";
+import {DetachCmd} from "./app/detach-cmd";
 
 export const AppExec = (appName, subCommand, ...subCommandArgs) => {
 	let rootConfig = FsHelper.getRootConfig();
@@ -20,6 +19,9 @@ export const AppExec = (appName, subCommand, ...subCommandArgs) => {
 			 */
 			case "attach":
 				return AttachCmd(appName, subCommandArgs.shift());
+				break;
+			case "detach":
+				return DetachCmd(appName, subCommandArgs.shift());
 				break;
 			case "add":
 				/**
