@@ -81,6 +81,9 @@ export const TestHelper = {
 	addPackageToApp(appName, pkgs) {
 		return AppExec(appName, "add", pkgs);
 	},
+	addDevPackageToApp(appName, pkgs) {
+		return AppExec(appName, "add-dev", pkgs);
+	},
 	attachApp(parentAppName, childAppName) {
 		return AppExec(parentAppName, "attach", childAppName);
 	},
@@ -97,6 +100,16 @@ export const TestHelper = {
 			expect(appPackageJson.dependencies).to.have.property(pkg);
 		});
 		TestHelper.expectStaticVersions(appPackageJson.dependencies);
+
+		return appPackageJson;
+	},
+	expectAppPackageJsonDevDeps(appName, pkgs) {
+		const rootConfig = this.getRootConfig();
+		const appPackageJson = FsHelper.getAppPackageJson(rootConfig.getApp(appName));
+		pkgs.forEach(pkg => {
+			expect(appPackageJson.devDependencies).to.have.property(pkg);
+		});
+		TestHelper.expectStaticVersions(appPackageJson.devDependencies);
 
 		return appPackageJson;
 	}

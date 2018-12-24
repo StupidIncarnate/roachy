@@ -1,7 +1,8 @@
 import {FsHelper} from "../../helpers/fs-helper";
 import {ErrorMessages} from "../../error-messages";
+import {PACKAGE_TYPES} from "../../models/root-app-config.model";
 
-export const AddCmd = (appName, packages = []) => {
+export const AddCmd = (appName, packageType, packages = []) => {
 	/**
 	 * Args can be any number of apps and packages
 	 */
@@ -21,18 +22,15 @@ export const AddCmd = (appName, packages = []) => {
 	}
 
 	const appConfig = rootConfig.getApp(appName);
-	appConfig.addPackages(packages);
+
+	if(packageType === PACKAGE_TYPES.PACKAGES) {
+		appConfig.addPackages(packages);
+	} else {
+		appConfig.addDevPackages(packages);
+	}
 
 	FsHelper.saveRootConfig(rootConfig);
 
 	return Promise.resolve();
-	// Build out package.json deps for all apps
 
-	// appsUpgrader.snapshotRoot();
-	//
-	// return NpmExecHelper.install(packages).then(()=>{
-	// 	appsUpgrader.upgradeApps();
-	// }).catch(err =>{
-	// 	appsUpgrader.upgradeApps();
-	// });
 };

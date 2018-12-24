@@ -13,6 +13,9 @@ export default class RootAppConfigModel {
 		 */
 		this.config = configObj;
 	}
+	getConfig() {
+		return this.config;
+	}
 	getPath() {
 		return this.config.path;
 	}
