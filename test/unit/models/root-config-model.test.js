@@ -89,6 +89,20 @@ describe("models/root-config-model", ()=>{
 				.to.eql(["chai", "mocha", "react-tester"]);
 		});
 	});
+	describe("getAllAppPackages", ()=>{
+		it("returns a list of all pkgs and devPkgs", ()=>{
+			expect(nestedConfig.getAllAppPackages()).to.eql([
+				"backbone",
+				"chai",
+				"express",
+				"mocha",
+				"moment",
+				"react",
+				"react-tester",
+				"timegraph"
+			])
+		});
+	});
 	describe("getRequiredAppDeps", ()=>{
 		it("does a basic list",()=>{
 			const rootConfig = new RootConfigModel({

@@ -28,9 +28,6 @@ const outputChangedPackages = (oldPackages) => {
 
 		console.log(chalk.blue(`Saved the following packages to roachy: ${Object.keys(changeObj).join(", ")}`));
 	}
-	/**
-	 * TODO need to regen apps using any packages that changed versions
-	 */
 
 	return FsHelper.regenAppPackageJsons();
 };

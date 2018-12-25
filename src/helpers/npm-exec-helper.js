@@ -16,7 +16,22 @@ export const NpmExecHelper = {
 	},
 	install(packages, asDev) {
 
-		const cmd = `npm install ${asDev ? '--save-dev' : ''} ${packages.join(" ")}`
+		const cmd = `npm install ${asDev ? '--save-dev' : ''} ${packages.join(" ")}`;
+		return NpmExecHelper.exec(cmd).then(msg => {
+			return true;
+		}).catch(e =>{
+
+			switch(true) {
+				case e.indexOf("E404") > -1:
+					throw new Error(ErrorMessages.UNKNOWN_PACKAGE);
+					break;
+				default:
+					throw new Error(ErrorMessages.UNKNOWN_NPM_ERROR);
+			}
+		});
+	},
+	uninstall(packages, asDev) {
+		const cmd = `npm uninstall ${asDev ? '--save-dev' : ''} ${packages.join(" ")}`;
 		return NpmExecHelper.exec(cmd).then(msg => {
 			return true;
 		}).catch(e =>{

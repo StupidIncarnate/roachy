@@ -88,6 +88,29 @@ export default class RootConfigModel {
 			this.getPackages()[pkg] = PackageHelper.getCheckableVersion(pkgObj[pkg]);
 		}
 	}
+	removePackages(pkgArr) {
+		pkgArr.forEach(pkg =>{
+			delete this.config.packages[pkg];
+		});
+	}
+	getAllAppPackages() {
+		const usedPkgs = [];
+		this.getAppNames().forEach(appName =>{
+			this.getApp(appName).getPackages().forEach(pkgName => {
+				if(usedPkgs.indexOf(pkgName) === -1) {
+					usedPkgs.push(pkgName);
+				}
+			});
+			this.getApp(appName).getDevPackages().forEach(pkgName => {
+				if(usedPkgs.indexOf(pkgName) === -1) {
+					usedPkgs.push(pkgName);
+				}
+			});
+		});
+
+		return usedPkgs.sort();
+
+	}
 
 	/**
 	 * Dependency Tree Builder

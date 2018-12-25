@@ -10,6 +10,7 @@ export const ErrorMessages = {
 	APP_ALREADY_EXISTS: "already exists. Will not overwrite",
 	APPS_REQUIRED: "One or more appNames are required as an argument",
 	PACKAGES_REQUIRED: "One or more npm packages are required as an argument",
+	PACKAGES_IN_USE: "The following packages are in use so cannot uninstall them:",
 	UNKNOWN_PACKAGE: "Unknown npm package",
 	NOT_INSTALLED: "Following packages not installed; Make sure you've installed via 'roachy install pkg[...]' like you would npm install:",
 	UNKNOWN_APP: "Provided app is unknown",
@@ -17,5 +18,5 @@ export const ErrorMessages = {
 	UNKNOWN_APP_COMMAND: "Unknown app command:",
 	APP_UPGRADER_NO_SNAPSHOT: "App upgrader never made a snapshot",
 	PARENT_CHILD_COLLISION: "Parent app cannot link to child",
-	APP_ROOT_VERSION_MISMATCH: "are unreconcilable version mismatches. Fix the versions in the app you're trying to add to match root version of package in order to proceed."
+	APP_ROOT_VERSION_MISMATCH: "are unreconcilable version mismatches. Fix the versions in the app you're trying to add to match root version of package in order to proceed.",
 };
