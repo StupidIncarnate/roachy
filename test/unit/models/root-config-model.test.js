@@ -2,7 +2,7 @@ import {expect} from 'chai';
 import chai from 'chai';
 import RootConfigModel from "../../../src/models/root-config.model";
 
-const nestedConfig =  new RootConfigModel({
+const nestedConfig = new RootConfigModel({
 	apps: {
 		"common-server": {
 			path: null,

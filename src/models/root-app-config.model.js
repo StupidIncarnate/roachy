@@ -41,11 +41,21 @@ export default class RootAppConfigModel {
 	addPackages(packageArr = []) {
 		this.consolidatePackages(this.config.packages, packageArr);
 	}
+	removePackages(packages = []) {
+		const knownPkgs = packages.filter(pkg => this.config.packages.indexOf(pkg) > -1);
+		this.config.packages = this.config.packages.filter(pkg => packages.indexOf(pkg) === -1);
+		return knownPkgs;
+	}
 	getDevPackages() {
 		return this.config.devPackages;
 	}
 	addDevPackages(packageArr = []) {
 		this.consolidatePackages(this.config.devPackages, packageArr);
+	}
+	removeDevPackages(packages = []) {
+		const knownPkgs = packages.filter(pkg => this.config.devPackages.indexOf(pkg) > -1);
+		this.config.devPackages = this.config.devPackages.filter(pkg => packages.indexOf(pkg) === -1);
+		return knownPkgs;
 	}
 	consolidatePackages(pkgArr, newPackages = []) {
 		newPackages.forEach(item => {

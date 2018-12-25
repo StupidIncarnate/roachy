@@ -84,6 +84,12 @@ export const TestHelper = {
 	addDevPackageToApp(appName, pkgs) {
 		return AppExec(appName, "add-dev", pkgs);
 	},
+	removePackageToApp(appName, pkgs) {
+		return AppExec(appName, "remove", pkgs);
+	},
+	removeDevPackageToApp(appName, pkgs) {
+		return AppExec(appName, "remove-dev", pkgs);
+	},
 	attachApp(parentAppName, childAppName) {
 		return AppExec(parentAppName, "attach", childAppName);
 	},
