@@ -44,10 +44,6 @@ var processPkgJson = function processPkgJson() {
         packageList.push("".concat(_pkg2, "@").concat(consolidatedPkgs[_pkg2]));
       }
 
-      if (process.env.NODE_ENV !== "testing") {
-        packageList.push("roachy");
-      }
-
       rootPackageJson.dependencies = {};
       rootPackageJson.devDependencies = {};
 
@@ -71,16 +67,10 @@ var processPkgJson = function processPkgJson() {
         private: true,
         description: "app-commander",
         version: "0.0.1",
-        scripts: {
-          "roachy": "roachy"
-        },
+        scripts: {},
         dependencies: {},
         devDependencies: {}
       });
-
-      if (process.env.NODE_ENV !== "testing") {
-        return _npmExecHelper.NpmExecHelper.install(["roachy"], true);
-      }
     }
   });
 };

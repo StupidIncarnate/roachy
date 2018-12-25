@@ -43,6 +43,7 @@ export const InstallExec = (packages) => {
 	const rootPackage = FsHelper.getRootPackageJson();
 	const oldInstalled = PackageHelper.getDevInstalled(rootPackage);
 
+	console.log(chalk.yellow(`Registering packages with Roachy... ${packages}`));
 	return NpmExecHelper.install(packages, true).then(()=>{
 		return outputChangedPackages(oldInstalled);
 	}).catch(e =>{

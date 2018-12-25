@@ -61,6 +61,7 @@ var InstallExec = function InstallExec(packages) {
 
   var oldInstalled = _packageHelper.PackageHelper.getDevInstalled(rootPackage);
 
+  console.log(_chalk.default.yellow("Registering packages with Roachy... ".concat(packages)));
   return _npmExecHelper.NpmExecHelper.install(packages, true).then(function () {
     return outputChangedPackages(oldInstalled);
   }).catch(function (e) {

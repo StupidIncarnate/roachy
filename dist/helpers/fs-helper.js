@@ -167,6 +167,7 @@ var FsHelper = {
       var _loop = function _loop() {
         var appName = _step.value;
         p = p.then(function () {
+          console.log(_chalk.default.yellow("Regening package.json for ".concat(appName)));
           var appConfig = rootConfig.getApp(appName);
           var appPackageJson = FsHelper.getAppPackageJson(appConfig);
           appPackageJson.dependencies = rootConfig.buildPackageDepList(appName, _rootAppConfig.PACKAGE_TYPES.PACKAGES);

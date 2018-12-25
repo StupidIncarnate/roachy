@@ -129,6 +129,8 @@ export const FsHelper = {
 		for(const appName of apps) {
 
 			p = p.then(()=>{
+
+				console.log(chalk.yellow(`Regening package.json for ${appName}`));
 				const appConfig = rootConfig.getApp(appName);
 				const appPackageJson = FsHelper.getAppPackageJson(appConfig);
 				appPackageJson.dependencies = rootConfig.buildPackageDepList(appName, PACKAGE_TYPES.PACKAGES);

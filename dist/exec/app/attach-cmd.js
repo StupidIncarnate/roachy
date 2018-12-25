@@ -7,6 +7,10 @@ exports.AttachCmd = void 0;
 
 var _fsHelper = require("../../helpers/fs-helper");
 
+var _chalk = _interopRequireDefault(require("chalk"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 /**
  * Attaches a child app to a parent app for dependency referencing
  */
@@ -21,6 +25,7 @@ var AttachCmd = function AttachCmd(parentAppName, childAppName) {
 
   _fsHelper.FsHelper.saveRootConfig(rootConfig);
 
+  console.log(_chalk.default.blue("".concat(childAppName, " has been attached as a dependency to ").concat(parentAppName)));
   return Promise.resolve();
 };
 

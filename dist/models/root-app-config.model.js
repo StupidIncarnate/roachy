@@ -124,6 +124,7 @@ function () {
       newPackages.forEach(function (item) {
         pkgArr.indexOf(item) === -1 && pkgArr.push(item);
       });
+      pkgArr.sort();
     }
   }]);
 

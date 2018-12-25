@@ -60,7 +60,8 @@ export default class RootAppConfigModel {
 	consolidatePackages(pkgArr, newPackages = []) {
 		newPackages.forEach(item => {
 			pkgArr.indexOf(item) === -1 && pkgArr.push(item);
-		})
+		});
+		pkgArr.sort();
 	}
 
 }
