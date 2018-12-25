@@ -2,7 +2,7 @@
 
 /**
  * Scaffold a project
- * args: roachy add name path
+ * args: roachy add appName appPath
  */
 "use strict";
 
@@ -10,8 +10,13 @@ var _addExec = require("../exec/add-exec");
 
 var _argsHelper = require("../helpers/args-helper");
 
+var args = _argsHelper.ArgsHelper.getArgs(); // remove add command from args
+
+
+args.shift();
+
 try {
-  (0, _addExec.AddExec)().apply(null, _argsHelper.ArgsHelper.getArgs());
+  _addExec.AddExec.apply(null, args);
 } catch (e) {
   throw e;
 }

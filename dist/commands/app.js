@@ -1,4 +1,5 @@
 #! /usr/bin/env node
+
 /**
  * Scaffold a project
  * args: roachy app appName install [packages]
@@ -6,15 +7,19 @@
  * args: roachy app appName attach childApp
  * args: roachy app appName detach childApp
  */
+"use strict";
 
-import {ArgsHelper} from "../helpers/args-helper";
-import {AppExec} from "../exec/app-exec";
-const args = ArgsHelper.getArgs();
-// remove app command from args
+var _argsHelper = require("../helpers/args-helper");
+
+var _appExec = require("../exec/app-exec");
+
+var args = _argsHelper.ArgsHelper.getArgs(); // remove app command from args
+
+
 args.shift();
 
 try {
-	AppExec.apply(null, args);
-} catch(e) {
-	throw e;
+  _appExec.AppExec.apply(null, args);
+} catch (e) {
+  throw e;
 }

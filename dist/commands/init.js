@@ -2,6 +2,7 @@
 
 /**
  * Scaffold a project
+ * roachy init
  */
 "use strict";
 

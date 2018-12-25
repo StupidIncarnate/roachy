@@ -11,7 +11,7 @@ const args =  ArgsHelper.getArgs();
 args.shift();
 
 try {
-	return InstallExec.apply(null, args);
+	InstallExec.apply(null, args);
 } catch(e) {
 	throw e;
 }

@@ -8,7 +8,7 @@
 import {InitExec} from "../exec/init-exec";
 
 try {
-	return InitExec();
+	InitExec();
 } catch(e) {
 	throw e;
 }
