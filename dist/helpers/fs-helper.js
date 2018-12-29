@@ -98,6 +98,18 @@ var FsHelper = {
       spaces: '\t'
     });
   },
+  getProdPackageJsonDeps: function getProdPackageJsonDeps(folderPath) {
+    var pkgJson = this.openPackageJson(this.getPath(folderPath));
+    var returnPkgs = {};
+
+    var installedPkgs = _packageHelper.PackageHelper.getInstalled(pkgJson);
+
+    for (var pkgName in installedPkgs) {
+      returnPkgs[pkgName] = _packageHelper.PackageHelper.getCheckableVersion(installedPkgs[pkgName]);
+    }
+
+    return returnPkgs;
+  },
   getPackageJsonDeps: function getPackageJsonDeps(folderPath) {
     var pkgJson = this.openPackageJson(this.getPath(folderPath));
 
@@ -167,14 +179,23 @@ var FsHelper = {
       var _loop = function _loop() {
         var appName = _step.value;
         p = p.then(function () {
-          console.log(_chalk.default.yellow("Regening package.json for ".concat(appName)));
           var appConfig = rootConfig.getApp(appName);
           var appPackageJson = FsHelper.getAppPackageJson(appConfig);
+          var oldDepStr = JSON.stringify(appPackageJson.dependencies);
+          var oldDevDepStr = JSON.stringify(appPackageJson.devDependencies);
           appPackageJson.dependencies = rootConfig.buildPackageDepList(appName, _rootAppConfig.PACKAGE_TYPES.PACKAGES);
           appPackageJson.devDependencies = rootConfig.buildPackageDepList(appName, _rootAppConfig.PACKAGE_TYPES.DEV_PACKAGES);
-          FsHelper.saveAppPackageJson(appConfig, appPackageJson);
-          FsHelper.changeCwd(appConfig.getPath());
-          return _npmExecHelper.NpmExecHelper.writePackageLock();
+          /**
+           *  If one of the deps have changed, then we want to output the new package.json /lock files
+           */
+
+          if (oldDepStr !== JSON.stringify(appPackageJson.dependencies) || oldDevDepStr !== JSON.stringify(appPackageJson.devDependencies)) {
+            console.log(_chalk.default.yellow("Regening package.json for ".concat(appName)));
+            FsHelper.saveAppPackageJson(appConfig, appPackageJson);
+            FsHelper.deletePath([appConfig.getPath(), "package-lock.json"]);
+            FsHelper.changeCwd(appConfig.getPath());
+            return _npmExecHelper.NpmExecHelper.writePackageLock();
+          }
         });
       };
 

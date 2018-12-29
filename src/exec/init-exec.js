@@ -15,9 +15,6 @@ const processPkgJson = ()=> {
 			for(const pkg in PackageHelper.getInstalled(rootPackageJson)) {
 				consolidatedPkgs[pkg] = PackageHelper.getInstalled(rootPackageJson)[pkg];
 			}
-			for(const pkg in PackageHelper.getDevInstalled(rootPackageJson)) {
-				consolidatedPkgs[pkg] = PackageHelper.getDevInstalled(rootPackageJson)[pkg];
-			}
 
 			const packageList = [];
 			for(const pkg in consolidatedPkgs) {
@@ -25,15 +22,14 @@ const processPkgJson = ()=> {
 			}
 
 			rootPackageJson.dependencies = {};
-			rootPackageJson.devDependencies = {};
 
 			FsHelper.writeJson(rootPackageJsonPath, rootPackageJson);
 
-			return NpmExecHelper.install(packageList, true).then(()=>{
+			return NpmExecHelper.install(packageList).then(()=>{
 				/**
 				 * Reopen to pull package versions
 				 */
-				const installedPkgObj = FsHelper.getPackageJsonDeps(FsHelper.cwd());
+				const installedPkgObj = FsHelper.getProdPackageJsonDeps(FsHelper.cwd());
 				const rootConfig = FsHelper.getRootConfig();
 				rootConfig.addPackages(installedPkgObj);
 				FsHelper.saveRootConfig(rootConfig);

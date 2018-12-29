@@ -4,7 +4,10 @@
   "private": true,
   "description": "description",
   "license": "MIT",
-  "devDependencies": {
+  "dependencies": {
     "moment": "^2.23.0"
+  },
+  "devDependencies": {
+    "chai-as-promised": "^6.0.0"
   }
 }

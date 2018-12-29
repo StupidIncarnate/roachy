@@ -54,14 +54,16 @@ describe("cmd: uninstall", () => {
 			let rootConfig = TestHelper.getRootConfig();
 			expect(Object.keys(rootConfig.getPackages())).to.eql(["moment"]);
 			const rootPackage = TestHelper.getRootPackage();
-			expect(Object.keys(PackageHelper.getDevInstalled(rootPackage))).to.eql(["moment"]);
+			expect(Object.keys(PackageHelper.getInstalled(rootPackage))).to.eql(["moment"]);
+			expect(Object.keys(PackageHelper.getDevInstalled(rootPackage))).to.eql(["chai-as-promised"]);
 
 			return UninstallExec(["moment"]).then(()=>{
 				let rootConfig = TestHelper.getRootConfig();
 				expect(Object.keys(rootConfig.getPackages())).to.eql([]);
 
 				const rootPackage = TestHelper.getRootPackage();
-				expect(Object.keys(PackageHelper.getDevInstalled(rootPackage))).to.eql([]);
+				expect(Object.keys(PackageHelper.getInstalled(rootPackage))).to.eql([]);
+				expect(Object.keys(PackageHelper.getDevInstalled(rootPackage))).to.eql(["chai-as-promised"]);
 			})
 
 		});

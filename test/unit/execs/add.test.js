@@ -107,8 +107,8 @@ describe("cmd: add", () => {
 						expect(pkgJson.dependencies.request).to.startsWith("^");
 
 						let rootPkgJson = FsHelper.openPackageJson(TestHelper.formatPath());
-						expect(rootPkgJson.devDependencies).to.have.property("request");
-						expect(rootPkgJson.devDependencies.request).to.startsWith("^");
+						expect(rootPkgJson.dependencies).to.have.property("request");
+						expect(rootPkgJson.dependencies.request).to.startsWith("^");
 
 						return expect(AddExec("lib-ui", TestHelper.getLibUiPath())).to.be.rejectedWith(Error, ErrorMessages.APP_ROOT_VERSION_MISMATCH);
 					});
@@ -152,11 +152,11 @@ describe("cmd: add", () => {
 							 * Ensure root packagejson install packages
 							 */
 							pkgJson = FsHelper.openPackageJson(TestHelper.formatPath());
-							expect(pkgJson.devDependencies).to.have.property("request");
-							expect(pkgJson.devDependencies.request).to.startsWith("^");
+							expect(pkgJson.dependencies).to.have.property("request");
+							expect(pkgJson.dependencies.request).to.startsWith("^");
 
-							expect(pkgJson.devDependencies).to.have.property("chai");
-							expect(pkgJson.devDependencies.chai).to.startsWith("^");
+							expect(pkgJson.dependencies).to.have.property("chai");
+							expect(pkgJson.dependencies.chai).to.startsWith("^");
 
 
 							/**

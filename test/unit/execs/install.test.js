@@ -58,7 +58,8 @@ describe("cmd: install", () => {
 						TestHelper.expectStaticVersions(rootConfig.getPackages());
 
 						const rootPackage = TestHelper.getRootPackage();
-						expect(Object.keys(PackageHelper.getDevInstalled(rootPackage))).to.eql(["moment", "npm-package-arg", "request"]);
+						expect(Object.keys(PackageHelper.getInstalled(rootPackage))).to.eql(["moment", "npm-package-arg", "request"]);
+						expect(Object.keys(PackageHelper.getDevInstalled(rootPackage))).to.eql(["chai-as-promised"]);
 
 					});
 			});

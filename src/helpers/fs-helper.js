@@ -69,6 +69,16 @@ export const FsHelper = {
 	writeJson(path, contents) {
 		fsExtra.writeJsonSync(path, contents, {spaces: '\t'});
 	},
+	getProdPackageJsonDeps(folderPath) {
+		const pkgJson = this.openPackageJson(this.getPath(folderPath));
+		const returnPkgs = {};
+		const installedPkgs = PackageHelper.getInstalled(pkgJson);
+		for(const pkgName in installedPkgs) {
+			returnPkgs[pkgName] = PackageHelper.getCheckableVersion(installedPkgs[pkgName]);
+		}
+
+		return returnPkgs;
+	},
 	getPackageJsonDeps(folderPath) {
 		const pkgJson = this.openPackageJson(this.getPath(folderPath));
 		const returnPkgs = PackageHelper.getDevInstalled(pkgJson);
@@ -129,17 +139,27 @@ export const FsHelper = {
 		for(const appName of apps) {
 
 			p = p.then(()=>{
-
-				console.log(chalk.yellow(`Regening package.json for ${appName}`));
 				const appConfig = rootConfig.getApp(appName);
 				const appPackageJson = FsHelper.getAppPackageJson(appConfig);
+				const oldDepStr = JSON.stringify(appPackageJson.dependencies);
+				const oldDevDepStr = JSON.stringify(appPackageJson.devDependencies);
+
 				appPackageJson.dependencies = rootConfig.buildPackageDepList(appName, PACKAGE_TYPES.PACKAGES);
 				appPackageJson.devDependencies = rootConfig.buildPackageDepList(appName, PACKAGE_TYPES.DEV_PACKAGES);
 
-				FsHelper.saveAppPackageJson(appConfig, appPackageJson);
-
-				FsHelper.changeCwd(appConfig.getPath());
-				return NpmExecHelper.writePackageLock();
+				/**
+				 *  If one of the deps have changed, then we want to output the new package.json /lock files
+				 */
+				if(
+					oldDepStr !== JSON.stringify(appPackageJson.dependencies)
+					|| oldDevDepStr !== JSON.stringify(appPackageJson.devDependencies)
+				) {
+					console.log(chalk.yellow(`Regening package.json for ${appName}`));
+					FsHelper.saveAppPackageJson(appConfig, appPackageJson);
+					FsHelper.deletePath([appConfig.getPath(), "package-lock.json"]);
+					FsHelper.changeCwd(appConfig.getPath());
+					return NpmExecHelper.writePackageLock();
+				}
 			});
 
 		}

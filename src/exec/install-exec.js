@@ -7,7 +7,7 @@ import {PackageHelper} from "../helpers/package-helper";
 const outputChangedPackages = (oldPackages) => {
 
 	const rootPackage = FsHelper.getRootPackageJson();
-	const newPackages = PackageHelper.getDevInstalled(rootPackage);
+	const newPackages = PackageHelper.getInstalled(rootPackage);
 
 	const changeObj = {};
 	let hasChanges = false;
@@ -41,10 +41,10 @@ export const InstallExec = (packages) => {
 	FsHelper.ensureRootPath();
 
 	const rootPackage = FsHelper.getRootPackageJson();
-	const oldInstalled = PackageHelper.getDevInstalled(rootPackage);
+	const oldInstalled = PackageHelper.getInstalled(rootPackage);
 
 	console.log(chalk.yellow(`Registering packages with Roachy... ${packages}`));
-	return NpmExecHelper.install(packages, true).then(()=>{
+	return NpmExecHelper.install(packages).then(()=>{
 		return outputChangedPackages(oldInstalled);
 	}).catch(e =>{
 		return outputChangedPackages(oldInstalled).then(()=>{

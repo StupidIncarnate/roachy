@@ -30,18 +30,23 @@ describe("cmd: init", ()=>{
 			expect(configJson).to.have.property("packages").and.to.be.an("object");
 		});
 	});
-	it("registers any installed packages on init", ()=>{
+	it("registers any installed packages on init; skips devDependencies", ()=>{
 		return NpmExecHelper.install(["chai"]).then(()=>{
 			let rootPackageJson = TestHelper.getRootPackage();
 			expect(PackageHelper.getInstalled(rootPackageJson)).to.have.property("chai");
-			expect(PackageHelper.getDevInstalled(rootPackageJson)).to.have.property("moment");
+			expect(PackageHelper.getInstalled(rootPackageJson)).to.have.property("moment");
+			expect(PackageHelper.getDevInstalled(rootPackageJson)).to.have.property("chai-as-promised");
 
 			return InitExec().then(()=>{
 				let rootPackageJson = TestHelper.getRootPackage();
-				expect(PackageHelper.getDevInstalled(rootPackageJson)).to.have.property("chai");
-				expect(PackageHelper.getDevInstalled(rootPackageJson)).to.have.property("moment");
+				expect(PackageHelper.getInstalled(rootPackageJson)).to.have.property("chai");
+				expect(PackageHelper.getInstalled(rootPackageJson)).to.have.property("moment");
+				expect(PackageHelper.getDevInstalled(rootPackageJson)).to.have.property("chai-as-promised");
 
-				expect(PackageHelper.getInstalled(rootPackageJson)).to.eql({});
+				expect(Object.keys(PackageHelper.getInstalled(rootPackageJson))).to.eql([
+					"chai",
+					"moment"
+				]);
 				let rootConfig = TestHelper.getRootConfig();
 				expect(Object.keys(rootConfig.getPackages())).to.eql([
 					"chai",
@@ -52,4 +57,5 @@ describe("cmd: init", ()=>{
 			});
 		});
 	});
+
 });
