@@ -7,6 +7,13 @@ export const PackageHelper = {
 	getDevInstalled(packagejson) {
 		return packagejson.devDependencies || {};
 	},
+	getPackageName(pkgName) {
+		if(pkgName.indexOf("@") > -1) {
+			return pkgName.substr(0, pkgName.indexOf("@"));
+		}
+
+		return pkgName;
+	},
 	getCheckableVersion(version) {
 		if(version === "*") {
 			return null;

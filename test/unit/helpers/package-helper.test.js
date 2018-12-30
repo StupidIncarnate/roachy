@@ -22,4 +22,12 @@ describe("helpers/package-helper", ()=>{
 			expect(PackageHelper.getCheckableVersion("*")).to.equal(null);
 		});
 	});
+	describe("getPackageName", () => {
+		it("handles just a name", ()=> {
+			expect(PackageHelper.getPackageName("moment")).to.equal("moment");
+		});
+		it("handles a name with version", ()=> {
+			expect(PackageHelper.getPackageName("moment@3.3.1")).to.equal("moment");
+		});
+	});
 });

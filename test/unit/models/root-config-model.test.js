@@ -103,6 +103,34 @@ describe("models/root-config-model", ()=>{
 			])
 		});
 	});
+	describe("getPackagesInUse", ()=>{
+		it("should return empty in no packages passed in",()=>{
+			expect(nestedConfig.getPackagesInUse([])).eql({});
+		});
+		it("should return config if one package is passed in", ()=>{
+			expect(nestedConfig.getPackagesInUse(["express"])).eql({
+				"common-server": ["express"]
+			});
+		});
+		it("should return multi apps using a package", ()=>{
+			expect(nestedConfig.getPackagesInUse(["react", "backbone"])).eql({
+				"common-ui": ["backbone", "react"],
+				"ui-app": ["react"],
+				"ui-app-child": ["backbone","react"]
+			});
+		});
+		it("should return pkgs in devPkgs", ()=> {
+			expect(nestedConfig.getPackagesInUse(["mocha"])).eql({
+				"common": ["mocha"]
+			});
+		});
+		it("handles versions in pkg name", ()=> {
+			expect(nestedConfig.getPackagesInUse(["mocha@1.3.3"])).eql({
+				"common": ["mocha"]
+			});
+		})
+
+	});
 	describe("getRequiredAppDeps", ()=>{
 		it("does a basic list",()=>{
 			const rootConfig = new RootConfigModel({

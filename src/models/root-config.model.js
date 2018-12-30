@@ -111,6 +111,35 @@ export default class RootConfigModel {
 		return usedPkgs.sort();
 
 	}
+	getPackagesInUse(pkgs) {
+		const pkgsInUseByApp = {};
+
+		/**
+		 * Strip version from name
+		 */
+		pkgs = pkgs.map(pkg => PackageHelper.getPackageName(pkg));
+
+		this.getAppNames().forEach(appName =>{
+			this.getApp(appName).getPackages().forEach(pkgName => {
+				if(pkgs.indexOf(pkgName) !== -1) {
+					pkgsInUseByApp[appName] = pkgsInUseByApp[appName] || [];
+					pkgsInUseByApp[appName].push(pkgName)
+				}
+			});
+			this.getApp(appName).getDevPackages().forEach(pkgName => {
+				if(pkgs.indexOf(pkgName) !== -1) {
+					pkgsInUseByApp[appName] = pkgsInUseByApp[appName] || [];
+					pkgsInUseByApp[appName].push(pkgName)
+				}
+			});
+		});
+
+		for(const appName in pkgsInUseByApp) {
+			pkgsInUseByApp[appName] = pkgsInUseByApp[appName].filter((v, i, a) => a.indexOf(v) === i);
+		}
+
+		return pkgsInUseByApp;
+	}
 
 	/**
 	 * Dependency Tree Builder

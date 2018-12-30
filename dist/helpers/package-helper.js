@@ -11,6 +11,13 @@ var PackageHelper = {
   getDevInstalled: function getDevInstalled(packagejson) {
     return packagejson.devDependencies || {};
   },
+  getPackageName: function getPackageName(pkgName) {
+    if (pkgName.indexOf("@") > -1) {
+      return pkgName.substr(0, pkgName.indexOf("@"));
+    }
+
+    return pkgName;
+  },
   getCheckableVersion: function getCheckableVersion(version) {
     if (version === "*") {
       return null;

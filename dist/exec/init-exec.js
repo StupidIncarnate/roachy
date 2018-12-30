@@ -34,26 +34,21 @@ var processPkgJson = function processPkgJson() {
         consolidatedPkgs[pkg] = _packageHelper.PackageHelper.getInstalled(rootPackageJson)[pkg];
       }
 
-      for (var _pkg in _packageHelper.PackageHelper.getDevInstalled(rootPackageJson)) {
-        consolidatedPkgs[_pkg] = _packageHelper.PackageHelper.getDevInstalled(rootPackageJson)[_pkg];
-      }
-
       var packageList = [];
 
-      for (var _pkg2 in consolidatedPkgs) {
-        packageList.push("".concat(_pkg2, "@").concat(consolidatedPkgs[_pkg2]));
+      for (var _pkg in consolidatedPkgs) {
+        packageList.push("".concat(_pkg, "@").concat(consolidatedPkgs[_pkg]));
       }
 
       rootPackageJson.dependencies = {};
-      rootPackageJson.devDependencies = {};
 
       _fsHelper.FsHelper.writeJson(rootPackageJsonPath, rootPackageJson);
 
-      return _npmExecHelper.NpmExecHelper.install(packageList, true).then(function () {
+      return _npmExecHelper.NpmExecHelper.install(packageList).then(function () {
         /**
          * Reopen to pull package versions
          */
-        var installedPkgObj = _fsHelper.FsHelper.getPackageJsonDeps(_fsHelper.FsHelper.cwd());
+        var installedPkgObj = _fsHelper.FsHelper.getProdPackageJsonDeps(_fsHelper.FsHelper.cwd());
 
         var rootConfig = _fsHelper.FsHelper.getRootConfig();
 

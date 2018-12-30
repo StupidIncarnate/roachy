@@ -166,6 +166,43 @@ function () {
       });
       return usedPkgs.sort();
     }
+  }, {
+    key: "getPackagesInUse",
+    value: function getPackagesInUse(pkgs) {
+      var _this4 = this;
+
+      var pkgsInUseByApp = {};
+      /**
+       * Strip version from name
+       */
+
+      pkgs = pkgs.map(function (pkg) {
+        return _packageHelper.PackageHelper.getPackageName(pkg);
+      });
+      this.getAppNames().forEach(function (appName) {
+        _this4.getApp(appName).getPackages().forEach(function (pkgName) {
+          if (pkgs.indexOf(pkgName) !== -1) {
+            pkgsInUseByApp[appName] = pkgsInUseByApp[appName] || [];
+            pkgsInUseByApp[appName].push(pkgName);
+          }
+        });
+
+        _this4.getApp(appName).getDevPackages().forEach(function (pkgName) {
+          if (pkgs.indexOf(pkgName) !== -1) {
+            pkgsInUseByApp[appName] = pkgsInUseByApp[appName] || [];
+            pkgsInUseByApp[appName].push(pkgName);
+          }
+        });
+      });
+
+      for (var appName in pkgsInUseByApp) {
+        pkgsInUseByApp[appName] = pkgsInUseByApp[appName].filter(function (v, i, a) {
+          return a.indexOf(v) === i;
+        });
+      }
+
+      return pkgsInUseByApp;
+    }
     /**
      * Dependency Tree Builder
      */
@@ -207,14 +244,14 @@ function () {
   }, {
     key: "getRequiredAppDeps",
     value: function getRequiredAppDeps(appName, collectedAppDeps) {
-      var _this4 = this;
+      var _this5 = this;
 
       collectedAppDeps = collectedAppDeps || [];
       this.getApp(appName).getAttachedApps().forEach(function (attachedAppName) {
         if (collectedAppDeps.indexOf(attachedAppName) === -1) {
           collectedAppDeps.push(attachedAppName);
 
-          _this4.getRequiredAppDeps(attachedAppName, collectedAppDeps);
+          _this5.getRequiredAppDeps(attachedAppName, collectedAppDeps);
         }
       });
       return collectedAppDeps.sort();
@@ -222,11 +259,11 @@ function () {
   }, {
     key: "collectAppPackages",
     value: function collectAppPackages(appNames, packageType) {
-      var _this5 = this;
+      var _this6 = this;
 
       var packages = [];
       appNames.forEach(function (appName) {
-        var appConfig = _this5.getApp(appName);
+        var appConfig = _this6.getApp(appName);
 
         appConfig.getPackagesByType(packageType).forEach(function (pkg) {
           if (packages.indexOf(pkg) === -1) {

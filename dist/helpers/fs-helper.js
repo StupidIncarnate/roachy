@@ -166,6 +166,7 @@ var FsHelper = {
     var rootConfig = FsHelper.getRootConfig();
     var cwd = FsHelper.cwd();
     var apps = appName ? [appName] : rootConfig.getAppNames();
+    console.log(_chalk.default.yellow("Seeing about regen'ing package.jsons any apps...."));
     /**
      * Rebuild package.jsons for each app
      */

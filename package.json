@@ -1,6 +1,6 @@
 {
   "name": "roachy",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": "StupidIncarnate",
   "scripts": {
     "test": "cross-env NODE_ENV=testing mocha test/unit/**/*.test.js --require @babel/register --timeout 50000 --reporter mocha-junit-reporter",

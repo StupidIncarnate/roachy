@@ -132,6 +132,8 @@ export const FsHelper = {
 
 		const cwd = FsHelper.cwd();
 		const apps = appName ? [appName] : rootConfig.getAppNames();
+
+		console.log(chalk.yellow(`Seeing about regen'ing package.jsons any apps....`));
 		/**
 		 * Rebuild package.jsons for each app
 		 */

@@ -20,7 +20,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var outputChangedPackages = function outputChangedPackages(oldPackages) {
   var rootPackage = _fsHelper.FsHelper.getRootPackageJson();
 
-  var newPackages = _packageHelper.PackageHelper.getDevInstalled(rootPackage);
+  var newPackages = _packageHelper.PackageHelper.getInstalled(rootPackage);
 
   var changeObj = {};
   var hasChanges = false;
@@ -59,10 +59,10 @@ var InstallExec = function InstallExec(packages) {
 
   var rootPackage = _fsHelper.FsHelper.getRootPackageJson();
 
-  var oldInstalled = _packageHelper.PackageHelper.getDevInstalled(rootPackage);
+  var oldInstalled = _packageHelper.PackageHelper.getInstalled(rootPackage);
 
   console.log(_chalk.default.yellow("Registering packages with Roachy... ".concat(packages)));
-  return _npmExecHelper.NpmExecHelper.install(packages, true).then(function () {
+  return _npmExecHelper.NpmExecHelper.install(packages).then(function () {
     return outputChangedPackages(oldInstalled);
   }).catch(function (e) {
     return outputChangedPackages(oldInstalled).then(function () {

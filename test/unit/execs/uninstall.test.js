@@ -30,7 +30,7 @@ describe("cmd: uninstall", () => {
 			it("errors if package one package is not recognized", () => {
 				expect(()=>UninstallExec(["jksdhkds"])).to.throw(ErrorMessages.NOT_INSTALLED);
 			});
-			it("errors when one package is in user", () => {
+			it("errors when one package is in use", () => {
 				let rootConfig = TestHelper.getRootConfig();
 				expect(Object.keys(rootConfig.getPackages())).to.eql(["moment"]);
 				return InstallExec(["request"]).then(()=>{

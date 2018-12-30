@@ -14,7 +14,8 @@ export const UninstallExec = (packages) => {
 
 	/**
 	 * Check if any packages are unknown
-	 */const installedPkgs = Object.keys(rootConfig.getPackages());
+	 */
+	const installedPkgs = Object.keys(rootConfig.getPackages());
 
 	const unknownPackages = packages.filter(pkg => installedPkgs.indexOf(pkg) === -1);
 	if(unknownPackages.length) {
@@ -24,10 +25,13 @@ export const UninstallExec = (packages) => {
 	/**
 	 * Check if any packages are used by app
 	 */
-	const usedPkgs = rootConfig.getAllAppPackages();
-	const pkgsInUse = usedPkgs.filter(pkg => usedPkgs.indexOf(pkg) !== -1);
-	if(pkgsInUse.length) {
-		throw new Error(ErrorMessages.PACKAGES_IN_USE + " " + pkgsInUse.join(", "))
+	const usedPkgsByApp = rootConfig.getPackagesInUse(packages);
+	if(Object.keys(usedPkgsByApp).length) {
+		const errorStr = Object.keys(usedPkgsByApp)
+			.map((appName) => `${appName}: ${usedPkgsByApp[appName].join(", ")}`)
+			.join(";");
+
+		throw new Error(ErrorMessages.PACKAGES_IN_USE + " " + errorStr);
 	}
 
 	return NpmExecHelper.uninstall(packages, true).then(()=>{

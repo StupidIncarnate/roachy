@@ -41,13 +41,13 @@ var UninstallExec = function UninstallExec(packages) {
    */
 
 
-  var usedPkgs = rootConfig.getAllAppPackages();
-  var pkgsInUse = usedPkgs.filter(function (pkg) {
-    return usedPkgs.indexOf(pkg) !== -1;
-  });
+  var usedPkgsByApp = rootConfig.getPackagesInUse(packages);
 
-  if (pkgsInUse.length) {
-    throw new Error(_errorMessages.ErrorMessages.PACKAGES_IN_USE + " " + pkgsInUse.join(", "));
+  if (Object.keys(usedPkgsByApp).length) {
+    var errorStr = Object.keys(usedPkgsByApp).map(function (appName) {
+      return "".concat(appName, ": ").concat(usedPkgsByApp[appName].join(", "));
+    }).join(";");
+    throw new Error(_errorMessages.ErrorMessages.PACKAGES_IN_USE + " " + errorStr);
   }
 
   return _npmExecHelper.NpmExecHelper.uninstall(packages, true).then(function () {
