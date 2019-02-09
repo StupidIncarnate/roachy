@@ -1,0 +1,11 @@
+{
+  "name": "roachy-stub",
+  "version": "0.0.1",
+  "description": "For tests to download so they don't take forever between each test",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "roachy",
+  "license": "ISC"
+}

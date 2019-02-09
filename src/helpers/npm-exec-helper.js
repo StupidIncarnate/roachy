@@ -45,6 +45,14 @@ export const NpmExecHelper = {
 			}
 		});
 	},
+	getInstalledVersion(pkgName) {
+		const cmd = `npm view ${pkgName} version`;
+		return NpmExecHelper.exec(cmd).then(version => {
+			return version;
+		}).catch(e =>{
+			throw new Error(ErrorMessages.UNKNOWN_NPM_ERROR);
+		});
+	},
 	writePackageLock() {
 		const cmd = `npm install --package-lock-only`;
 		return NpmExecHelper.exec(cmd).catch(e =>{

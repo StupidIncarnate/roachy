@@ -3,7 +3,7 @@
   "version": "0.3.1",
   "author": "StupidIncarnate",
   "scripts": {
-    "test": "cross-env NODE_ENV=testing mocha test/unit/**/*.test.js --require @babel/register --timeout 50000 --reporter mocha-junit-reporter",
+    "test": "cross-env NODE_ENV=testing mocha --require @babel/register test/unit/**/*.test.js --timeout 50000 --reporter mocha-junit-reporter",
     "prebuild": "npm run test",
     "build": "babel src --out-dir dist",
     "prepare": "npm run build",

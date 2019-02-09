@@ -11,25 +11,33 @@ const outputChangedPackages = (oldPackages) => {
 
 	const changeObj = {};
 	let hasChanges = false;
+	let promises = [];
 	for(const pkg in newPackages) {
 		/**
 		 * Changed if pkg was added or if version was changed
 		 */
 		if(!(pkg in oldPackages) || oldPackages[pkg] !== newPackages[pkg]) {
-			changeObj[pkg] = PackageHelper.getCheckableVersion(newPackages[pkg]);
-			hasChanges = true;
+
+			promises.push(NpmExecHelper.getInstalledVersion(pkg).then(version => {
+				if(version) {
+					changeObj[pkg] = version.trim();
+					hasChanges = true;
+				}
+			}));
 		}
 	}
 
-	if(hasChanges) {
-		const rootConfig = FsHelper.getRootConfig();
-		rootConfig.addPackages(changeObj);
-		FsHelper.saveRootConfig(rootConfig);
+	return Promise.all(promises).then(()=> {
+		if(hasChanges) {
+			const rootConfig = FsHelper.getRootConfig();
+			rootConfig.addPackages(changeObj);
+			FsHelper.saveRootConfig(rootConfig);
 
-		console.log(chalk.blue(`Saved the following packages to roachy: ${Object.keys(changeObj).join(", ")}`));
-	}
+			console.log(chalk.blue(`Saved the following packages to roachy: ${Object.keys(changeObj).join(", ")}`));
+		}
 
-	return FsHelper.regenAppPackageJsons();
+		return FsHelper.regenAppPackageJsons();
+	});
 };
 export const InstallExec = (packages) => {
 	FsHelper.getRootConfig();
