@@ -5,9 +5,7 @@
   "description": "description",
   "license": "MIT",
   "dependencies": {
-    "moment": "^2.23.0"
   },
   "devDependencies": {
-    "chai-as-promised": "^6.0.0"
   }
 }

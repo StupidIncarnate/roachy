@@ -5,7 +5,7 @@ import {InitExec} from "../../../src/exec/init-exec";
 import {NpmExecHelper} from "../../../src/helpers/npm-exec-helper";
 import {PackageHelper} from "../../../src/helpers/package-helper";
 
-describe("cmd: init", ()=>{
+describe.only("cmd: init", ()=>{
 	beforeEach(()=> {
 		TestHelper.prepEnvironment();
 	});
@@ -30,32 +30,34 @@ describe("cmd: init", ()=>{
 			expect(configJson).to.have.property("packages").and.to.be.an("object");
 		});
 	});
-	it("registers any installed packages on init; skips devDependencies", ()=>{
-		return NpmExecHelper.install(["chai"]).then(()=>{
-			let rootPackageJson = TestHelper.getRootPackage();
-			expect(PackageHelper.getInstalled(rootPackageJson)).to.have.property("chai");
-			expect(PackageHelper.getInstalled(rootPackageJson)).to.have.property("moment");
-			expect(PackageHelper.getDevInstalled(rootPackageJson)).to.have.property("chai-as-promised");
+	it("installs if package.json but no node_modules", ()=>{
+		const pJson = TestHelper.getRootPackage();
+		pJson.dependencies = {"roachy-stub": "^0.0.1"};
+		TestHelper.saveRootPackageJson(pJson);
+		expect(TestHelper.ensureFileExists(["node_modules"])).to.equal(false);
 
-			return InitExec().then(()=>{
-				let rootPackageJson = TestHelper.getRootPackage();
-				expect(PackageHelper.getInstalled(rootPackageJson)).to.have.property("chai");
-				expect(PackageHelper.getInstalled(rootPackageJson)).to.have.property("moment");
-				expect(PackageHelper.getDevInstalled(rootPackageJson)).to.have.property("chai-as-promised");
-
-				expect(Object.keys(PackageHelper.getInstalled(rootPackageJson))).to.eql([
-					"chai",
-					"moment"
-				]);
-				let rootConfig = TestHelper.getRootConfig();
-				expect(Object.keys(rootConfig.getPackages())).to.eql([
-					"chai",
-					"moment"
-				]);
-
-				TestHelper.expectStaticVersions(rootConfig.getPackages());
-			});
+		return InitExec().then(() => {
+			expect(TestHelper.ensureFileExists(["node_modules"])).to.equal(true);
 		});
+	});
+	it("registers any installed packages on init; skips devDependencies", ()=>{
+		const pJson = TestHelper.getRootPackage();
+		pJson.dependencies = {"roachy-stub": "^0.0.1"};
+		TestHelper.saveRootPackageJson(pJson);
+
+		return InitExec().then(() => {
+			let rootPackageJson = TestHelper.getRootPackage();
+			expect(PackageHelper.getInstalled(rootPackageJson)).to.eql({
+				"roachy-stub": "^0.0.1"
+			});
+
+			let rootConfig = TestHelper.getRootConfig();
+			expect(rootConfig.getPackages()).to.eql({
+				"roachy-stub": "0.0.1"
+			});
+
+		});
+
 	});
 
 });

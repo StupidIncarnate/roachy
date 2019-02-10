@@ -43,6 +43,9 @@ export const TestHelper = {
 	getJsonContents(pathArr) {
 		return fsExtra.readJsonSync(this.formatPath(pathArr))
 	},
+	saveRootPackageJson(json){
+		return FsHelper.writeJson(path.join(this.getTestArea(), "package.json"), json);
+	},
 	ensureFileExists(pathArr){
 		return fs.existsSync(this.formatPath(pathArr));
 	},
@@ -93,7 +96,6 @@ export const TestHelper = {
 	attachApp(parentAppName, childAppName) {
 		return AppExec(parentAppName, "attach", childAppName);
 	},
-
 	expectStaticVersions(pkgObj) {
 		for(const pkg in pkgObj) {
 			expect(pkgObj[pkg]).to.match(/^\d+\.\d+\.\d+$/);
