@@ -31,12 +31,12 @@ describe("cmd: install", () => {
 			});
 			it("errors when one package is not valid",()=>{
 				const rootConfig = TestHelper.getRootConfig();
-				expect(Object.keys(rootConfig.getPackages())).to.eql(["moment"]);
+				expect(Object.keys(rootConfig.getPackages())).to.eql([]);
 				return expect(InstallExec(["request","jksdhkds"])).to.be.rejected
 					.then(err =>{
 						expect(err).to.be.an.instanceOf(Error, ErrorMessages.UNKNOWN_PACKAGE);
 						const rootConfig = TestHelper.getRootConfig();
-						expect(Object.keys(rootConfig.getPackages())).to.eql(["moment"]);
+						expect(Object.keys(rootConfig.getPackages())).to.eql([]);
 					});
 			});
 		});
@@ -50,16 +50,16 @@ describe("cmd: install", () => {
 			});
 			it("installs multiple packages", ()=>{
 				const rootConfig = TestHelper.getRootConfig();
-				expect(Object.keys(rootConfig.getPackages())).to.eql(["moment"]);
-				return InstallExec(["request","npm-package-arg"])
+				expect(Object.keys(rootConfig.getPackages())).to.eql([]);
+				return InstallExec(["roachy-stub","npm-package-arg"])
 					.then(data =>{
 						const rootConfig = TestHelper.getRootConfig();
-						expect(Object.keys(rootConfig.getPackages())).to.eql(["moment", "npm-package-arg", "request"]);
+						expect(Object.keys(rootConfig.getPackages())).to.eql(["npm-package-arg", "roachy-stub"]);
 						TestHelper.expectStaticVersions(rootConfig.getPackages());
 
 						const rootPackage = TestHelper.getRootPackage();
-						expect(Object.keys(PackageHelper.getInstalled(rootPackage))).to.eql(["moment", "npm-package-arg", "request"]);
-						expect(Object.keys(PackageHelper.getDevInstalled(rootPackage))).to.eql(["chai-as-promised"]);
+						expect(Object.keys(PackageHelper.getInstalled(rootPackage))).to.eql(["npm-package-arg", "roachy-stub"]);
+						expect(Object.keys(PackageHelper.getDevInstalled(rootPackage))).to.eql([]);
 
 					});
 			});

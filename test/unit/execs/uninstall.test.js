@@ -32,12 +32,12 @@ describe("cmd: uninstall", () => {
 			});
 			it("errors when one package is in use", () => {
 				let rootConfig = TestHelper.getRootConfig();
-				expect(Object.keys(rootConfig.getPackages())).to.eql(["moment"]);
-				return InstallExec(["request"]).then(()=>{
-					return TestHelper.addPackageToApp(AppNames.LIB_UI, "request").then(()=>{
+				expect(Object.keys(rootConfig.getPackages())).to.eql([]);
+				return InstallExec(["roachy-stub"]).then(()=>{
+					return TestHelper.addPackageToApp(AppNames.LIB_UI, "roachy-stub").then(()=>{
 						let rootConfig = TestHelper.getRootConfig();
-						expect(rootConfig.getApp(AppNames.LIB_UI).getPackages()).to.eql(["request"]);
-						expect(()=>UninstallExec(["request"])).to.throw(ErrorMessages.PACKAGES_IN_USE);
+						expect(rootConfig.getApp(AppNames.LIB_UI).getPackages()).to.eql(["roachy-stub"]);
+						expect(()=>UninstallExec(["roachy-stub"])).to.throw(ErrorMessages.PACKAGES_IN_USE);
 					});
 				});
 			});
@@ -52,19 +52,25 @@ describe("cmd: uninstall", () => {
 		});
 		it("can remove unused packages from roachy", ()=>{
 			let rootConfig = TestHelper.getRootConfig();
-			expect(Object.keys(rootConfig.getPackages())).to.eql(["moment"]);
+			expect(Object.keys(rootConfig.getPackages())).to.eql([]);
 			const rootPackage = TestHelper.getRootPackage();
-			expect(Object.keys(PackageHelper.getInstalled(rootPackage))).to.eql(["moment"]);
-			expect(Object.keys(PackageHelper.getDevInstalled(rootPackage))).to.eql(["chai-as-promised"]);
+			expect(Object.keys(PackageHelper.getInstalled(rootPackage))).to.eql([]);
+			expect(Object.keys(PackageHelper.getDevInstalled(rootPackage))).to.eql([]);
 
-			return UninstallExec(["moment"]).then(()=>{
-				let rootConfig = TestHelper.getRootConfig();
-				expect(Object.keys(rootConfig.getPackages())).to.eql([]);
-
+			return InstallExec(["roachy-stub"]).then(()=> {
 				const rootPackage = TestHelper.getRootPackage();
-				expect(Object.keys(PackageHelper.getInstalled(rootPackage))).to.eql([]);
-				expect(Object.keys(PackageHelper.getDevInstalled(rootPackage))).to.eql(["chai-as-promised"]);
-			})
+				expect(Object.keys(PackageHelper.getInstalled(rootPackage))).to.eql(["roachy-stub"]);
+				expect(Object.keys(PackageHelper.getDevInstalled(rootPackage))).to.eql([]);
+
+				return UninstallExec(["roachy-stub"]).then(() => {
+					let rootConfig = TestHelper.getRootConfig();
+					expect(Object.keys(rootConfig.getPackages())).to.eql([]);
+
+					const rootPackage = TestHelper.getRootPackage();
+					expect(Object.keys(PackageHelper.getInstalled(rootPackage))).to.eql([]);
+					expect(Object.keys(PackageHelper.getDevInstalled(rootPackage))).to.eql([]);
+				});
+			});
 
 		});
 	});

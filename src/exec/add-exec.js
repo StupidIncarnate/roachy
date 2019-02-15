@@ -3,6 +3,7 @@ import {ErrorMessages} from "../error-messages";
 import {PackageHelper} from "../helpers/package-helper";
 import {InstallExec} from "./install-exec";
 import chalk from "chalk";
+import {NpmExecHelper} from "../helpers/npm-exec-helper";
 
 /**
  * Error if pkg
@@ -35,54 +36,59 @@ const reconcileExistingPackageJson = (rootConfig, appName, appLocation) => {
 
 		}
 
-		/**
-		 * Check if packages are copasetic with root packages
-		 */
-		const rootPackages = rootConfig.getPackages();
+		return NpmExecHelper.ensureNodeModules(appLocation).then(()=>{
 
-		/**
-		 * getpkg and devPkgs for app
-		 */
-		const pkgJson = FsHelper.openPackageJson(FsHelper.getPath(appLocation));
-		appDeps = Object.keys(PackageHelper.getInstalled(pkgJson));
-		appDevDeps = Object.keys(PackageHelper.getDevInstalled(pkgJson));
+			const rootPackages = rootConfig.getPackages();
 
-		const appPkgs = FsHelper.getPackageJsonDeps(appLocation);
-		const badVersions = [], newPackages = [];
+			/**
+			 * getpkg and devPkgs for app
+			 */
+			const pkgJson = FsHelper.openPackageJson(FsHelper.getPath(appLocation));
+			appDeps = Object.keys(PackageHelper.getInstalled(pkgJson));
+			appDevDeps = Object.keys(PackageHelper.getDevInstalled(pkgJson));
 
-		for(const pkgName in appPkgs) {
-			if(rootPackages[pkgName]
-				&& PackageHelper.getCheckableVersion(appPkgs[pkgName]) !== PackageHelper.getCheckableVersion(rootPackages[pkgName])) {
-				badVersions.push(
-					`${pkgName}: root(${PackageHelper.getCheckableVersion(rootPackages[pkgName])})-app(${PackageHelper.getCheckableVersion(appPkgs[pkgName])})`
-				);
+			const appPkgs = FsHelper.getPackageJsonDepNames(appLocation);
+			const badVersions = [], newPackages = [];
+
+			const pkgVersionCheckPromises = [];
+			for(const pkgName of appPkgs) {
+				pkgVersionCheckPromises.push(NpmExecHelper.getInstalledVersion(pkgName).then(version =>{
+					if(rootPackages[pkgName] && rootPackages[pkgName] !== version){
+						badVersions.push(
+							`${pkgName}: root(${rootPackages[pkgName]})-app(${version})`
+						);
+					}
+
+					if(!rootPackages[pkgName]) {
+						newPackages.push(`${pkgName}@${version}`);
+					}
+				}));
+
 			}
 
-			if(!rootPackages[pkgName]) {
-				newPackages.push(`${pkgName}@${PackageHelper.getCheckableVersion(appPkgs[pkgName])}`);
-			}
-		}
+			return Promise.all(pkgVersionCheckPromises).then(()=>{
+				/**
+				 * Throw if app pkgs versions need to be fixed
+				 */
+				if(badVersions.length) {
+					throw new Error(`${badVersions.join(", ")} ${ErrorMessages.APP_ROOT_VERSION_MISMATCH}`);
+				}
 
-		/**
-		 * Throw if app pkgs versions need to be fixed
-		 */
-		if(badVersions.length) {
-			throw new Error(`${badVersions.join(", ")} ${ErrorMessages.APP_ROOT_VERSION_MISMATCH}`);
-		}
+				/**
+				 * We want to delete before installing just in case node tries to pull these in.
+				 */
+				FsHelper.deletePath([appLocation, "node_modules"]);
 
-		/**
-		 * We want to delete before installing just in case node tries to pull these in.
-		 */
-		FsHelper.deletePath([appLocation, "node_modules"]);
+				if(!newPackages.length) {
+					return true;
+				}
 
-		if(!newPackages.length) {
-			return true;
-		}
-
-		/**
-		 * If there are new packages, install them to root
-		 */
-		return InstallExec(newPackages);
+				/**
+				 * If there are new packages, install them to root
+				 */
+				return InstallExec(newPackages);
+			});
+		});
 	}).then(()=>{
 		return {
 			packages: appDeps,

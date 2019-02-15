@@ -46,30 +46,27 @@ describe("cmd: app.remove/remove-dev", () => {
 							.then(() => TestHelper.initLibCommonApp())
 							.then(() => TestHelper.initLibUiApp())
 							.then(() => TestHelper.initTimewatcherUiLibUiApp())
-							.then(() => TestHelper.installPackage(['request']))
+							.then(() => TestHelper.installPackage(['roachy-stub']))
 					});
 					it("adds pkg to root", () => {
-						expect(TestHelper.getRootConfigObject().packages).to.have.property("request");
-						expect(TestHelper.getRootConfigObject().packages.request).to.be.a("string");
+						expect(TestHelper.getRootConfigObject().packages).eql({"roachy-stub": "0.0.3"});
 
 						const rootConfig = TestHelper.getRootConfig();
 						expect(FsHelper.getAppPackageJson(rootConfig.getApp(AppNames.LIB_UI))[addType.depType]).to.eql({});
-						return addType.addCall(AppNames.LIB_UI, "request").then(() => {
+						return addType.addCall(AppNames.LIB_UI, "roachy-stub").then(() => {
 							expect(TestHelper.ensureFileExists([TestHelper.getLibUiPath(), "node_modules"])).to.equal(false);
 							const rootConfig = TestHelper.getRootConfig();
-							expect(rootConfig.getPackages()).to.have.property("request");
-							expect(rootConfig.getPackages().request).to.be.a("string");
+							expect(rootConfig.getPackages()).eql({"roachy-stub": "0.0.3"});
 							TestHelper.expectStaticVersions(rootConfig.packages);
 
-							expect(rootConfig.getApp(AppNames.LIB_UI).getConfig()[addType.packageType]).to.eql(["request"]);
-							addType.expectPackageJsonDepsCall(AppNames.LIB_UI, ["request"]);
+							expect(rootConfig.getApp(AppNames.LIB_UI).getConfig()[addType.packageType]).to.eql(["roachy-stub"]);
+							addType.expectPackageJsonDepsCall(AppNames.LIB_UI, ["roachy-stub"]);
 
 						}).then(()=>{
-							return addType.removeCall(AppNames.LIB_UI, "request").then(() => {
+							return addType.removeCall(AppNames.LIB_UI, "roachy-stub").then(() => {
 								expect(TestHelper.ensureFileExists([TestHelper.getLibUiPath(), "node_modules"])).to.equal(false);
 								const rootConfig = TestHelper.getRootConfig();
-								expect(rootConfig.getPackages()).to.have.property("request");
-								expect(rootConfig.getPackages().request).to.be.a("string");
+								expect(rootConfig.getPackages()).eql({"roachy-stub": "0.0.3"});
 								TestHelper.expectStaticVersions(rootConfig.packages);
 
 								addType.expectPackageJsonDepsCall(AppNames.LIB_UI, []);

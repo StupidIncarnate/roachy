@@ -79,12 +79,15 @@ export const FsHelper = {
 
 		return returnPkgs;
 	},
-	getPackageJsonDeps(folderPath) {
+	getPackageJsonDepNames(folderPath) {
 		const pkgJson = this.openPackageJson(this.getPath(folderPath));
-		const returnPkgs = PackageHelper.getDevInstalled(pkgJson);
-		const installedPkgs = PackageHelper.getInstalled(pkgJson);
-		for(const pkgName in installedPkgs) {
-			returnPkgs[pkgName] = PackageHelper.getCheckableVersion(installedPkgs[pkgName]);
+
+		const returnPkgs = Object.keys(PackageHelper.getDevInstalled(pkgJson));
+		const installedPkgs = Object.keys(PackageHelper.getInstalled(pkgJson));
+		for(const pkgName of installedPkgs) {
+			if(returnPkgs.indexOf(pkgName) === -1) {
+				returnPkgs.push(pkgName);
+			}
 		}
 
 		return returnPkgs;

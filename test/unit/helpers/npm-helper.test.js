@@ -22,22 +22,22 @@ describe("helper/npm-helper", ()=>{
 		it("installs single npm package without version", ()=>{
 			let rootPackage = FsHelper.openPackageJson(TestHelper.getTestArea());
 			let deps = PackageHelper.getInstalled(rootPackage);
-			expect(deps).to.not.have.property("request");
-			return NpmExecHelper.install(["request"]).then(()=>{
+			expect(deps).to.not.have.property("roachy-stub");
+			return NpmExecHelper.install(["roachy-stub"]).then(()=>{
 				let rootPackage = FsHelper.openPackageJson(TestHelper.getTestArea());
-				expect(PackageHelper.getInstalled(rootPackage)).to.have.property("request");
-				expect(PackageHelper.getInstalled(rootPackage).request).to.be.a("string");
+				expect(PackageHelper.getInstalled(rootPackage)).to.have.property("roachy-stub");
+				expect(PackageHelper.getInstalled(rootPackage)["roachy-stub"]).to.be.a("string");
 			});
 		});
 		it("installs multiple npm packages", ()=> {
 			let rootPackage = FsHelper.openPackageJson(TestHelper.getTestArea());
 			let deps = PackageHelper.getInstalled(rootPackage);
-			expect(deps).to.not.have.property("request");
+			expect(deps).to.not.have.property("roachy-stub");
 			expect(deps).to.not.have.property("chai");
-			return NpmExecHelper.install(["request", "chai"]).then(()=>{
+			return NpmExecHelper.install(["roachy-stub", "chai"]).then(()=>{
 				let rootPackage = FsHelper.openPackageJson(TestHelper.getTestArea());
-				expect(PackageHelper.getInstalled(rootPackage)).to.have.property("request");
-				expect(PackageHelper.getInstalled(rootPackage).request).to.be.a("string");
+				expect(PackageHelper.getInstalled(rootPackage)).to.have.property("roachy-stub");
+				expect(PackageHelper.getInstalled(rootPackage)["roachy-stub"]).to.be.a("string");
 				expect(PackageHelper.getInstalled(rootPackage)).to.have.property("chai");
 				expect(PackageHelper.getInstalled(rootPackage).chai).to.be.a("string");
 			});

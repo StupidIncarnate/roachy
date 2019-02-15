@@ -22,7 +22,7 @@ describe("cmd: app.detach", () => {
 			return TestHelper.initEnvironment()
 				.then(() => TestHelper.initLibUiApp())
 				.then(() => TestHelper.initTimewatcherUiLibUiApp())
-				.then(() => TestHelper.installPackage(['request']));
+				.then(() => TestHelper.installPackage(['roachy-stub']));
 		});
 		it("detaches a child app", () => {
 			let rootConfig = TestHelper.getRootConfig();
@@ -42,9 +42,9 @@ describe("cmd: app.detach", () => {
 			let rootConfig = TestHelper.getRootConfig();
 			let timewatchUiConfig = rootConfig.getApp(AppNames.TIMEWATCH_UI);
 			expect(timewatchUiConfig.getPackages()).to.eql([]);
-			return TestHelper.addPackageToApp(AppNames.LIB_UI, ['request']).then(()=>{
+			return TestHelper.addPackageToApp(AppNames.LIB_UI, ['roachy-stub']).then(()=>{
 				let rootConfig = TestHelper.getRootConfig();
-				expect(rootConfig.getApp(AppNames.LIB_UI).getPackages()).to.eql(["request"]);
+				expect(rootConfig.getApp(AppNames.LIB_UI).getPackages()).to.eql(["roachy-stub"]);
 
 				return AppExec(AppNames.TIMEWATCH_UI, "attach", AppNames.LIB_UI).then(()=> {
 					let rootConfig = TestHelper.getRootConfig();
@@ -55,9 +55,9 @@ describe("cmd: app.detach", () => {
 					/**
 					 * Makes sure package.jsons got strick version of packages for all deps from attached app
 					 */
-					const libAppPackageJson = TestHelper.expectAppPackageJsonDeps(AppNames.LIB_UI, ["request"]);
+					const libAppPackageJson = TestHelper.expectAppPackageJsonDeps(AppNames.LIB_UI, ["roachy-stub"]);
 					expect(libAppPackageJson.scripts).to.have.property("start");
-					const timewatchAppPackageJson = TestHelper.expectAppPackageJsonDeps(AppNames.TIMEWATCH_UI, ["request"]);
+					const timewatchAppPackageJson = TestHelper.expectAppPackageJsonDeps(AppNames.TIMEWATCH_UI, ["roachy-stub"]);
 					expect(timewatchAppPackageJson.scripts).to.have.property("start");
 
 
@@ -71,7 +71,7 @@ describe("cmd: app.detach", () => {
 						/**
 						 * Makes sure package.jsons got strick version of packages for all deps from attached app
 						 */
-						TestHelper.expectAppPackageJsonDeps(AppNames.LIB_UI, ["request"]);
+						TestHelper.expectAppPackageJsonDeps(AppNames.LIB_UI, ["roachy-stub"]);
 						TestHelper.expectAppPackageJsonDeps(AppNames.TIMEWATCH_UI, []);
 					});
 				});

@@ -25,7 +25,7 @@ describe("cmd: app.attach", () => {
 			return TestHelper.initEnvironment()
 				.then(()=> TestHelper.initLibUiApp())
 				.then(()=> TestHelper.initTimewatcherUiLibUiApp())
-				.then(()=> TestHelper.installPackage(['request']));
+				.then(()=> TestHelper.installPackage(['roachy-stub']));
 		});
 		it("attaches a child app to a parent with no packages", ()=>{
 			let rootConfig = TestHelper.getRootConfig();
@@ -40,14 +40,14 @@ describe("cmd: app.attach", () => {
 			let rootConfig = TestHelper.getRootConfig();
 			let timewatchUiConfig = rootConfig.getApp(AppNames.TIMEWATCH_UI);
 			expect(timewatchUiConfig.getPackages()).to.eql([]);
-			return TestHelper.addPackageToApp(AppNames.LIB_UI, ['request']).then(()=>{
+			return TestHelper.addPackageToApp(AppNames.LIB_UI, ['roachy-stub']).then(()=>{
 				let rootConfig = TestHelper.getRootConfig();
-				expect(rootConfig.getApp(AppNames.LIB_UI).getPackages()).to.eql(["request"]);
+				expect(rootConfig.getApp(AppNames.LIB_UI).getPackages()).to.eql(["roachy-stub"]);
 
 				/**
 				 * Makes sure package.jsons got strick version of packages for all deps from attached app
 				 */
-				const libAppPackageJson = TestHelper.expectAppPackageJsonDeps(AppNames.LIB_UI, ["request"]);
+				const libAppPackageJson = TestHelper.expectAppPackageJsonDeps(AppNames.LIB_UI, ["roachy-stub"]);
 				expect(libAppPackageJson.scripts).to.have.property("start");
 				const timewatchAppPackageJson = TestHelper.expectAppPackageJsonDeps(AppNames.TIMEWATCH_UI, []);
 				expect(timewatchAppPackageJson.scripts).to.have.property("start");
@@ -67,9 +67,9 @@ describe("cmd: app.attach", () => {
 					/**
 					 * Makes sure package.jsons got strick version of packages for all deps from attached app
 					 */
-					const libAppPackageJson = TestHelper.expectAppPackageJsonDeps(AppNames.LIB_UI, ["request"]);
+					const libAppPackageJson = TestHelper.expectAppPackageJsonDeps(AppNames.LIB_UI, ["roachy-stub"]);
 					expect(libAppPackageJson.scripts).to.have.property("start");
-					const timewatchAppPackageJson = TestHelper.expectAppPackageJsonDeps(AppNames.TIMEWATCH_UI, ["request"]);
+					const timewatchAppPackageJson = TestHelper.expectAppPackageJsonDeps(AppNames.TIMEWATCH_UI, ["roachy-stub"]);
 					expect(timewatchAppPackageJson.scripts).to.have.property("start");
 
 					/**

@@ -36,7 +36,7 @@ describe("cmd: app.add/add-dev", () => {
 					return expect(AppExec(AppNames.LIB_UI, addType.cmd)).to.be.rejectedWith(Error, ErrorMessages.PACKAGES_REQUIRED);
 				});
 				it("errors if a package passed is not installed", () => {
-					return expect(AppExec(AppNames.LIB_UI, addType.cmd, "request")).to.be.rejectedWith(Error, ErrorMessages.NOT_INSTALLED);
+					return expect(AppExec(AppNames.LIB_UI, addType.cmd, "roachy-stub")).to.be.rejectedWith(Error, ErrorMessages.NOT_INSTALLED);
 				});
 			});
 			describe("Good State", () => {
@@ -47,23 +47,20 @@ describe("cmd: app.add/add-dev", () => {
 							.then(() => TestHelper.initLibCommonApp())
 							.then(() => TestHelper.initLibUiApp())
 							.then(() => TestHelper.initTimewatcherUiLibUiApp())
-							.then(() => TestHelper.installPackage(['request']))
+							.then(() => TestHelper.installPackage(['roachy-stub']))
 					});
 					it("adds pkg to root", () => {
 						expect(TestHelper.ensureFileExists("node_modules")).to.equal(true);
 						expect(TestHelper.ensureFileExists([TestHelper.getLibUiPath(), "node_modules"])).to.equal(false);
-						expect(TestHelper.getRootConfigObject().packages).to.have.property("request");
-						expect(TestHelper.getRootConfigObject().packages.request).to.be.a("string");
+						expect(TestHelper.getRootConfigObject().packages).eql({"roachy-stub": "0.0.3"});
 						const rootConfig = TestHelper.getRootConfig();
 						expect(FsHelper.getAppPackageJson(rootConfig.getApp(AppNames.LIB_UI))[addType.depType]).to.eql({});
-						return addType.addCall(AppNames.LIB_UI, "request").then(() => {
+						return addType.addCall(AppNames.LIB_UI, "roachy-stub").then(() => {
 							expect(TestHelper.ensureFileExists([TestHelper.getLibUiPath(), "node_modules"])).to.equal(false);
 							const rootConfig = TestHelper.getRootConfig();
-							expect(rootConfig.getPackages()).to.have.property("request");
-							expect(rootConfig.getPackages().request).to.be.a("string");
-							TestHelper.expectStaticVersions(rootConfig.packages);
+							expect(rootConfig.getPackages()).to.eql({"roachy-stub": "0.0.3"});
 
-							const appPackageJson = addType.expectPackageJsonDepsCall(AppNames.LIB_UI, ["request"]);
+							const appPackageJson = addType.expectPackageJsonDepsCall(AppNames.LIB_UI, ["roachy-stub"]);
 							expect(appPackageJson.scripts).to.have.property("start");
 
 						});
@@ -73,15 +70,14 @@ describe("cmd: app.add/add-dev", () => {
 						expect(TestHelper.ensureFileExists([TestHelper.getLibUiPath(), "node_modules"])).to.equal(false);
 						expect(TestHelper.ensureFileExists([TestHelper.getTimewatchUiPath(), "node_modules"])).to.equal(false);
 
-						expect(TestHelper.getRootConfigObject().packages).to.have.property("request");
-						expect(TestHelper.getRootConfigObject().packages.request).to.be.a("string");
+						expect(TestHelper.getRootConfigObject().packages).to.eql({"roachy-stub": "0.0.3"});
 
 						const rootConfig = TestHelper.getRootConfig();
 						expect(FsHelper.getAppPackageJson(rootConfig.getApp(AppNames.LIB_UI))[addType.depType]).to.eql({});
 						expect(FsHelper.getAppPackageJson(rootConfig.getApp(AppNames.TIMEWATCH_UI))[addType.depType]).to.eql({});
 
 						return TestHelper.attachApp(AppNames.TIMEWATCH_UI, AppNames.LIB_UI).then(() => {
-							return addType.addCall(AppNames.LIB_UI, "request").then(() => {
+							return addType.addCall(AppNames.LIB_UI, "roachy-stub").then(() => {
 								/**
 								 * Make sure no node_modules in child paths
 								 */
@@ -92,15 +88,15 @@ describe("cmd: app.add/add-dev", () => {
 								 * Make sure added package got added to app
 								 */
 								const rootConfig = TestHelper.getRootConfig();
-								expect(rootConfig.getApp(AppNames.LIB_UI).getConfig()[addType.packageType]).to.eql(["request"]);
+								expect(rootConfig.getApp(AppNames.LIB_UI).getConfig()[addType.packageType]).to.eql(["roachy-stub"]);
 								expect(rootConfig.getApp(AppNames.TIMEWATCH_UI).getConfig()[addType.packageType]).to.eql([]);
 
 								/**
 								 * Makes sure package.jsons got strick version of packages for all deps from attached app
 								 */
-								const libAppPackageJson = addType.expectPackageJsonDepsCall(AppNames.LIB_UI, ["request"]);
+								const libAppPackageJson = addType.expectPackageJsonDepsCall(AppNames.LIB_UI, ["roachy-stub"]);
 								expect(libAppPackageJson.scripts).to.have.property("start");
-								const timewatchAppPackageJson = addType.expectPackageJsonDepsCall(AppNames.TIMEWATCH_UI, ["request"]);
+								const timewatchAppPackageJson = addType.expectPackageJsonDepsCall(AppNames.TIMEWATCH_UI, ["roachy-stub"]);
 								expect(timewatchAppPackageJson.scripts).to.have.property("start");
 
 								/**
@@ -121,8 +117,7 @@ describe("cmd: app.add/add-dev", () => {
 						expect(TestHelper.ensureFileExists([TestHelper.getLibUiPath(), "node_modules"])).to.equal(false);
 						expect(TestHelper.ensureFileExists([TestHelper.getTimewatchUiPath(), "node_modules"])).to.equal(false);
 
-						expect(TestHelper.getRootConfigObject().packages).to.have.property("request");
-						expect(TestHelper.getRootConfigObject().packages.request).to.be.a("string");
+						expect(TestHelper.getRootConfigObject().packages).to.eql({"roachy-stub": "0.0.3"});
 
 						const rootConfig = TestHelper.getRootConfig();
 						expect(FsHelper.getAppPackageJson(rootConfig.getApp(AppNames.LIB_COMMON))[addType.depType]).to.eql({});
@@ -130,20 +125,20 @@ describe("cmd: app.add/add-dev", () => {
 						expect(FsHelper.getAppPackageJson(rootConfig.getApp(AppNames.TIMEWATCH_UI))[addType.depType]).to.eql({});
 
 						return TestHelper.attachApp(AppNames.TIMEWATCH_UI, AppNames.LIB_UI).then(() => {
-							return addType.addCall(AppNames.LIB_COMMON, "request").then(() => {
+							return addType.addCall(AppNames.LIB_COMMON, "roachy-stub").then(() => {
 
 								/**
 								 * Make sure added package got added to app
 								 */
 								const rootConfig = TestHelper.getRootConfig();
-								expect(rootConfig.getApp(AppNames.LIB_COMMON).getConfig()[addType.packageType]).to.eql(["request"]);
+								expect(rootConfig.getApp(AppNames.LIB_COMMON).getConfig()[addType.packageType]).to.eql(["roachy-stub"]);
 								expect(rootConfig.getApp(AppNames.LIB_UI).getConfig()[addType.packageType]).to.eql([]);
 								expect(rootConfig.getApp(AppNames.TIMEWATCH_UI).getConfig()[addType.packageType]).to.eql([]);
 
 								/**
 								 * Makes sure package.jsons got strick version of packages for all deps from attached app
 								 */
-								addType.expectPackageJsonDepsCall(AppNames.LIB_COMMON, ["request"]);
+								addType.expectPackageJsonDepsCall(AppNames.LIB_COMMON, ["roachy-stub"]);
 								addType.expectPackageJsonDepsCall(AppNames.LIB_UI, []);
 								addType.expectPackageJsonDepsCall(AppNames.TIMEWATCH_UI, []);
 
@@ -164,16 +159,16 @@ describe("cmd: app.add/add-dev", () => {
 								 * Make sure added package got added to app
 								 */
 								const rootConfig = TestHelper.getRootConfig();
-								expect(rootConfig.getApp(AppNames.LIB_COMMON).getConfig()[addType.packageType]).to.eql(["request"]);
+								expect(rootConfig.getApp(AppNames.LIB_COMMON).getConfig()[addType.packageType]).to.eql(["roachy-stub"]);
 								expect(rootConfig.getApp(AppNames.LIB_UI).getConfig()[addType.packageType]).to.eql([]);
 								expect(rootConfig.getApp(AppNames.TIMEWATCH_UI).getConfig()[addType.packageType]).to.eql([]);
 
 								/**
 								 * Makes sure package.jsons got strick version of packages for all deps from attached app
 								 */
-								addType.expectPackageJsonDepsCall(AppNames.LIB_COMMON, ["request"]);
-								addType.expectPackageJsonDepsCall(AppNames.LIB_UI, ["request"]);
-								addType.expectPackageJsonDepsCall(AppNames.TIMEWATCH_UI, ["request"]);
+								addType.expectPackageJsonDepsCall(AppNames.LIB_COMMON, ["roachy-stub"]);
+								addType.expectPackageJsonDepsCall(AppNames.LIB_UI, ["roachy-stub"]);
+								addType.expectPackageJsonDepsCall(AppNames.TIMEWATCH_UI, ["roachy-stub"]);
 
 								/**
 								 * Make sure package-locks are gen'd as well
@@ -191,19 +186,18 @@ describe("cmd: app.add/add-dev", () => {
 						return TestHelper.initEnvironment()
 							.then(() => TestHelper.initLibUiApp())
 							.then(() => TestHelper.initTimewatcherUiLibUiApp())
-							.then(() => TestHelper.installPackage(['request@2.66.0']))
+							.then(() => TestHelper.installPackage(['roachy-stub@0.0.1']))
 					});
 					it("installs newer version and updates app", () => {
 
 						let packageLockJson;
-						expect(TestHelper.getRootConfigObject().packages).to.have.property("request");
-						expect(TestHelper.getRootConfigObject().packages.request).to.eql("2.66.0");
+						expect(TestHelper.getRootConfigObject().packages).to.eql({"roachy-stub": "0.0.1"});
 
 						const rootConfig = TestHelper.getRootConfig();
 						expect(FsHelper.getAppPackageJson(rootConfig.getApp(AppNames.LIB_UI))[addType.depType]).to.eql({});
 						expect(FsHelper.getAppPackageJson(rootConfig.getApp(AppNames.TIMEWATCH_UI))[addType.depType]).to.eql({});
 
-						return addType.addCall(AppNames.LIB_UI, "request").then(() => {
+						return addType.addCall(AppNames.LIB_UI, "roachy-stub").then(() => {
 							return TestHelper.attachApp(AppNames.TIMEWATCH_UI, AppNames.LIB_UI).then(() => {
 
 								/**
@@ -216,18 +210,17 @@ describe("cmd: app.add/add-dev", () => {
 								 * Make sure added package got added to app
 								 */
 								const rootConfig = TestHelper.getRootConfig();
-								expect(rootConfig.getApp(AppNames.LIB_UI).getConfig()[addType.packageType]).to.eql(["request"]);
+								expect(rootConfig.getApp(AppNames.LIB_UI).getConfig()[addType.packageType]).to.eql(["roachy-stub"]);
 								expect(rootConfig.getApp(AppNames.TIMEWATCH_UI).getConfig()[addType.packageType]).to.eql([]);
 
 								/**
 								 * Makes sure package.jsons got strick version of packages for all deps from attached app
 								 */
-								const libAppPackageJson = addType.expectPackageJsonDepsCall(AppNames.LIB_UI, ["request"]);
+								const libAppPackageJson = addType.expectPackageJsonDepsCall(AppNames.LIB_UI, ["roachy-stub"]);
 								expect(libAppPackageJson.scripts).to.have.property("start");
-								expect(libAppPackageJson[addType.depType].request).to.eql("2.66.0");
-								const timewatchAppPackageJson = addType.expectPackageJsonDepsCall(AppNames.TIMEWATCH_UI, ["request"]);
-								expect(timewatchAppPackageJson.scripts).to.have.property("start");
-								expect(timewatchAppPackageJson[addType.depType].request).to.eql("2.66.0");
+								expect(libAppPackageJson[addType.depType]).to.eql({"roachy-stub": "0.0.1"});
+								const timewatchAppPackageJson = addType.expectPackageJsonDepsCall(AppNames.TIMEWATCH_UI, ["roachy-stub"]);
+								expect(timewatchAppPackageJson[addType.depType]).to.eql({"roachy-stub": "0.0.1"});
 
 								/**
 								 * Make sure package-locks are gen'd as well
@@ -239,12 +232,12 @@ describe("cmd: app.add/add-dev", () => {
 
 							});
 						}).then(() => {
-							return TestHelper.installPackage(['request@2.88.0']).then(() => {
+							return TestHelper.installPackage(['roachy-stub@0.0.2']).then(() => {
 
-								const libAppPackageJson = addType.expectPackageJsonDepsCall(AppNames.LIB_UI, ["request"]);
-								expect(libAppPackageJson[addType.depType].request).to.eql("2.88.0");
-								const timewatchAppPackageJson = addType.expectPackageJsonDepsCall(AppNames.TIMEWATCH_UI, ["request"]);
-								expect(timewatchAppPackageJson[addType.depType].request).to.eql("2.88.0");
+								const libAppPackageJson = addType.expectPackageJsonDepsCall(AppNames.LIB_UI, ["roachy-stub"]);
+								expect(libAppPackageJson[addType.depType]).to.eql({"roachy-stub": "0.0.2"});
+								const timewatchAppPackageJson = addType.expectPackageJsonDepsCall(AppNames.TIMEWATCH_UI, ["roachy-stub"]);
+								expect(timewatchAppPackageJson[addType.depType]).to.eql({"roachy-stub": "0.0.2"});
 
 								/**
 								 * Make sure package-locks are gen'd as well

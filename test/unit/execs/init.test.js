@@ -2,10 +2,9 @@ import {TestHelper} from "../../helpers/test-helper";
 const expect = require('chai').expect;
 
 import {InitExec} from "../../../src/exec/init-exec";
-import {NpmExecHelper} from "../../../src/helpers/npm-exec-helper";
 import {PackageHelper} from "../../../src/helpers/package-helper";
 
-describe.only("cmd: init", ()=>{
+describe("cmd: init", ()=>{
 	beforeEach(()=> {
 		TestHelper.prepEnvironment();
 	});
