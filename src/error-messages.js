@@ -12,7 +12,7 @@ export const ErrorMessages = {
 	PACKAGES_REQUIRED: "One or more npm packages are required as an argument",
 	PACKAGES_IN_USE: "The following packages are in use so cannot uninstall them:",
 	UNKNOWN_PACKAGE: "Unknown npm package",
-	NOT_INSTALLED: "Following packages not installed; Make sure you've installed via 'roachy install pkg[...]' like you would npm install:",
+	NOT_INSTALLED: "Following packages not installed as dependencies; Make sure you've installed via 'roachy install pkg[...]' like you would npm install:",
 	UNKNOWN_APP: "Provided app is unknown",
 	UNKNOWN_NPM_ERROR: "An unexpected npm error happened. Look above to diagnose.",
 	UNKNOWN_APP_COMMAND: "Unknown app command:",

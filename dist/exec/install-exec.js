@@ -24,28 +24,39 @@ var outputChangedPackages = function outputChangedPackages(oldPackages) {
 
   var changeObj = {};
   var hasChanges = false;
+  var promises = [];
 
-  for (var pkg in newPackages) {
+  var _loop = function _loop(pkg) {
     /**
      * Changed if pkg was added or if version was changed
      */
     if (!(pkg in oldPackages) || oldPackages[pkg] !== newPackages[pkg]) {
-      changeObj[pkg] = _packageHelper.PackageHelper.getCheckableVersion(newPackages[pkg]);
-      hasChanges = true;
+      promises.push(_npmExecHelper.NpmExecHelper.getInstalledVersion(pkg).then(function (version) {
+        if (version) {
+          changeObj[pkg] = version.trim();
+          hasChanges = true;
+        }
+      }));
     }
+  };
+
+  for (var pkg in newPackages) {
+    _loop(pkg);
   }
 
-  if (hasChanges) {
-    var rootConfig = _fsHelper.FsHelper.getRootConfig();
+  return Promise.all(promises).then(function () {
+    if (hasChanges) {
+      var rootConfig = _fsHelper.FsHelper.getRootConfig();
 
-    rootConfig.addPackages(changeObj);
+      rootConfig.addPackages(changeObj);
 
-    _fsHelper.FsHelper.saveRootConfig(rootConfig);
+      _fsHelper.FsHelper.saveRootConfig(rootConfig);
 
-    console.log(_chalk.default.blue("Saved the following packages to roachy: ".concat(Object.keys(changeObj).join(", "))));
-  }
+      console.log(_chalk.default.blue("Saved the following packages to roachy: ".concat(Object.keys(changeObj).join(", "))));
+    }
 
-  return _fsHelper.FsHelper.regenAppPackageJsons();
+    return _fsHelper.FsHelper.regenAppPackageJsons();
+  });
 };
 
 var InstallExec = function InstallExec(packages) {

@@ -4,7 +4,7 @@
   "author": "StupidIncarnate",
   "scripts": {
     "test": "cross-env NODE_ENV=testing mocha --require @babel/register test/unit/**/*.test.js --timeout 50000 --reporter mocha-junit-reporter",
-    "prebuild": "npm run test",
+    "prepublish": "npm run test",
     "build": "babel src --out-dir dist",
     "prepare": "npm run build",
     "version": "git add -A src",

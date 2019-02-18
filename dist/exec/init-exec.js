@@ -21,52 +21,56 @@ var _packageHelper = require("../helpers/package-helper");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var ensureNodeModulesExists = function ensureNodeModulesExists() {
+  var rootPackageJsonPath = _fsHelper.FsHelper.joinPath([_fsHelper.FsHelper.cwd(), "package.json"]);
+
+  if (!_fsHelper.FsHelper.exists(rootPackageJsonPath)) {
+    _fsHelper.FsHelper.writeJson(rootPackageJsonPath, {
+      name: "app-commander",
+      private: true,
+      description: "app-commander",
+      version: "0.0.1",
+      scripts: {},
+      dependencies: {},
+      devDependencies: {}
+    });
+  }
+
+  if (!_fsHelper.FsHelper.exists(_fsHelper.FsHelper.joinPath([_fsHelper.FsHelper.cwd(), "node_modules"]))) {
+    return _npmExecHelper.NpmExecHelper.install();
+  }
+
+  return Promise.resolve();
+};
+
 var processPkgJson = function processPkgJson() {
-  return Promise.resolve().then(function () {
-    var rootPackageJsonPath = _fsHelper.FsHelper.joinPath([_fsHelper.FsHelper.cwd(), "package.json"]);
+  return ensureNodeModulesExists().then(function () {
+    var rootPackageJson = _fsHelper.FsHelper.openPackageJson(_fsHelper.FsHelper.cwd());
+    /**
+     * Get installed dep versions
+     */
 
-    if (_fsHelper.FsHelper.exists(rootPackageJsonPath)) {
-      var rootPackageJson = _fsHelper.FsHelper.openPackageJson(_fsHelper.FsHelper.cwd());
 
-      var consolidatedPkgs = {};
+    var versionPromises = [];
+    var pkgVersions = {};
 
-      for (var pkg in _packageHelper.PackageHelper.getInstalled(rootPackageJson)) {
-        consolidatedPkgs[pkg] = _packageHelper.PackageHelper.getInstalled(rootPackageJson)[pkg];
-      }
+    var _loop = function _loop(pkg) {
+      versionPromises.push(_npmExecHelper.NpmExecHelper.getInstalledVersion(pkg).then(function (version) {
+        pkgVersions[pkg] = version;
+      }));
+    };
 
-      var packageList = [];
-
-      for (var _pkg in consolidatedPkgs) {
-        packageList.push("".concat(_pkg, "@").concat(consolidatedPkgs[_pkg]));
-      }
-
-      rootPackageJson.dependencies = {};
-
-      _fsHelper.FsHelper.writeJson(rootPackageJsonPath, rootPackageJson);
-
-      return _npmExecHelper.NpmExecHelper.install(packageList).then(function () {
-        /**
-         * Reopen to pull package versions
-         */
-        var installedPkgObj = _fsHelper.FsHelper.getProdPackageJsonDeps(_fsHelper.FsHelper.cwd());
-
-        var rootConfig = _fsHelper.FsHelper.getRootConfig();
-
-        rootConfig.addPackages(installedPkgObj);
-
-        _fsHelper.FsHelper.saveRootConfig(rootConfig);
-      });
-    } else {
-      _fsHelper.FsHelper.writeJson(rootPackageJsonPath, {
-        name: "app-commander",
-        private: true,
-        description: "app-commander",
-        version: "0.0.1",
-        scripts: {},
-        dependencies: {},
-        devDependencies: {}
-      });
+    for (var pkg in _packageHelper.PackageHelper.getInstalled(rootPackageJson)) {
+      _loop(pkg);
     }
+
+    return Promise.all(versionPromises).then(function () {
+      var rootConfig = _fsHelper.FsHelper.getRootConfig();
+
+      rootConfig.addPackages(pkgVersions);
+
+      _fsHelper.FsHelper.saveRootConfig(rootConfig);
+    });
   });
 };
 
@@ -78,7 +82,7 @@ var InitExec = function InitExec() {
   }
   /**
    * This needs to be a direct write because the save in RootConfigModel
-   * checks for an existing rootmodelconfig to save properly
+   * checks for an existing root modelconfig to save properly
    */
 
 

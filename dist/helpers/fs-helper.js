@@ -110,15 +110,17 @@ var FsHelper = {
 
     return returnPkgs;
   },
-  getPackageJsonDeps: function getPackageJsonDeps(folderPath) {
+  getPackageJsonDepNames: function getPackageJsonDepNames(folderPath) {
     var pkgJson = this.openPackageJson(this.getPath(folderPath));
+    var returnPkgs = Object.keys(_packageHelper.PackageHelper.getDevInstalled(pkgJson));
+    var installedPkgs = Object.keys(_packageHelper.PackageHelper.getInstalled(pkgJson));
 
-    var returnPkgs = _packageHelper.PackageHelper.getDevInstalled(pkgJson);
+    for (var _i = 0; _i < installedPkgs.length; _i++) {
+      var pkgName = installedPkgs[_i];
 
-    var installedPkgs = _packageHelper.PackageHelper.getInstalled(pkgJson);
-
-    for (var pkgName in installedPkgs) {
-      returnPkgs[pkgName] = _packageHelper.PackageHelper.getCheckableVersion(installedPkgs[pkgName]);
+      if (returnPkgs.indexOf(pkgName) === -1) {
+        returnPkgs.push(pkgName);
+      }
     }
 
     return returnPkgs;

@@ -15,6 +15,8 @@ var _installExec = require("./install-exec");
 
 var _chalk = _interopRequireDefault(require("chalk"));
 
+var _npmExecHelper = require("../helpers/npm-exec-helper");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
@@ -44,59 +46,84 @@ var reconcileExistingPackageJson = function reconcileExistingPackageJson(rootCon
 
       return true;
     }
-    /**
-     * Check if packages are copasetic with root packages
-     */
 
+    return _npmExecHelper.NpmExecHelper.ensureNodeModules(appLocation).then(function () {
+      var rootPackages = rootConfig.getPackages();
+      /**
+       * getpkg and devPkgs for app
+       */
 
-    var rootPackages = rootConfig.getPackages();
-    /**
-     * getpkg and devPkgs for app
-     */
+      var pkgJson = _fsHelper.FsHelper.openPackageJson(_fsHelper.FsHelper.getPath(appLocation));
 
-    var pkgJson = _fsHelper.FsHelper.openPackageJson(_fsHelper.FsHelper.getPath(appLocation));
+      appDeps = Object.keys(_packageHelper.PackageHelper.getInstalled(pkgJson));
+      appDevDeps = Object.keys(_packageHelper.PackageHelper.getDevInstalled(pkgJson));
 
-    appDeps = Object.keys(_packageHelper.PackageHelper.getInstalled(pkgJson));
-    appDevDeps = Object.keys(_packageHelper.PackageHelper.getDevInstalled(pkgJson));
+      var appPkgs = _fsHelper.FsHelper.getPackageJsonDepNames(appLocation);
 
-    var appPkgs = _fsHelper.FsHelper.getPackageJsonDeps(appLocation);
+      var badVersions = [],
+          newPackages = [];
+      var pkgVersionCheckPromises = [];
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
 
-    var badVersions = [],
-        newPackages = [];
+      try {
+        var _loop = function _loop() {
+          var pkgName = _step.value;
+          pkgVersionCheckPromises.push(_npmExecHelper.NpmExecHelper.getInstalledVersion(pkgName).then(function (version) {
+            if (rootPackages[pkgName] && rootPackages[pkgName] !== version) {
+              badVersions.push("".concat(pkgName, ": root(").concat(rootPackages[pkgName], ")-app(").concat(version, ")"));
+            }
 
-    for (var pkgName in appPkgs) {
-      if (rootPackages[pkgName] && _packageHelper.PackageHelper.getCheckableVersion(appPkgs[pkgName]) !== _packageHelper.PackageHelper.getCheckableVersion(rootPackages[pkgName])) {
-        badVersions.push("".concat(pkgName, ": root(").concat(_packageHelper.PackageHelper.getCheckableVersion(rootPackages[pkgName]), ")-app(").concat(_packageHelper.PackageHelper.getCheckableVersion(appPkgs[pkgName]), ")"));
+            if (!rootPackages[pkgName]) {
+              newPackages.push("".concat(pkgName, "@").concat(version));
+            }
+          }));
+        };
+
+        for (var _iterator = appPkgs[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          _loop();
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return != null) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
       }
 
-      if (!rootPackages[pkgName]) {
-        newPackages.push("".concat(pkgName, "@").concat(_packageHelper.PackageHelper.getCheckableVersion(appPkgs[pkgName])));
-      }
-    }
-    /**
-     * Throw if app pkgs versions need to be fixed
-     */
+      return Promise.all(pkgVersionCheckPromises).then(function () {
+        /**
+         * Throw if app pkgs versions need to be fixed
+         */
+        if (badVersions.length) {
+          throw new Error("".concat(badVersions.join(", "), " ").concat(_errorMessages.ErrorMessages.APP_ROOT_VERSION_MISMATCH));
+        }
+        /**
+         * We want to delete before installing just in case node tries to pull these in.
+         */
 
 
-    if (badVersions.length) {
-      throw new Error("".concat(badVersions.join(", "), " ").concat(_errorMessages.ErrorMessages.APP_ROOT_VERSION_MISMATCH));
-    }
-    /**
-     * We want to delete before installing just in case node tries to pull these in.
-     */
+        _fsHelper.FsHelper.deletePath([appLocation, "node_modules"]);
+
+        if (!newPackages.length) {
+          return true;
+        }
+        /**
+         * If there are new packages, install them to root
+         */
 
 
-    _fsHelper.FsHelper.deletePath([appLocation, "node_modules"]);
-
-    if (!newPackages.length) {
-      return true;
-    }
-    /**
-     * If there are new packages, install them to root
-     */
-
-
-    return (0, _installExec.InstallExec)(newPackages);
+        return (0, _installExec.InstallExec)(newPackages);
+      });
+    });
   }).then(function () {
     return {
       packages: appDeps,
